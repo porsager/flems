@@ -4,13 +4,13 @@
   "description": "A standalone web playground / sandbox",
   "browser": "dist/flems.html",
   "main": "src/index.js",
-  "module": "dist/flems.mjs",
   "scripts": {
     "build": "npm run build:main && npm run build:runtime && npm run build:standalone",
     "build:main": "node scripts/main",
     "build:runtime": "node scripts/runtime",
     "build:standalone": "node scripts/standalone",
-    "dev": "node scripts/wright"
+    "dev": "node scripts/wright",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "playground",
