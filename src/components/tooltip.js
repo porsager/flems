@@ -1,8 +1,15 @@
 import m from 'mithril'
 import b from 'bss'
 
+function closest(el, className) {
+  while (!el.classList.contains(className))
+    el = el.parentElement
+
+  return el
+}
+
 const setTriangle = ({ dom }) => {
-  const container = dom.closest('.flems').getBoundingClientRect()
+  const container = closest(dom, 'flems').getBoundingClientRect()
       , parent = dom.parentNode.getBoundingClientRect()
 
   if (parent.top - container.top < 40) {
@@ -15,7 +22,7 @@ const setTriangle = ({ dom }) => {
 }
 
 const position = dom => {
-  const container = dom.closest('.flems').getBoundingClientRect()
+  const container = closest(dom, 'flems').getBoundingClientRect()
       , parent = dom.parentNode.getBoundingClientRect()
 
   const left = Math.min(
@@ -42,7 +49,7 @@ const oncreate = ({ dom }) => {
   position(dom)
 }
 
-export default (options, title = options) => [
+export default title => [
   m('.tooltip'
    + b
     .position('absolute')
