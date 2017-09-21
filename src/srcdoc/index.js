@@ -72,19 +72,18 @@ function init(data) {
     .slice
     .call(document.getElementsByTagName('script'))
 
-  state.load = state
-    .links
-    .filter(l => l.type === 'js' && l.content)
-    .concat(scripts.filter(s => !s.src).map(s =>
-      ({ name: '.html', content: s.textContent, el: s })
-    ))
+  const load = scripts.filter(s => !s.src).map(s => ({
+    name: '.html',
+    content: s.textContent,
+    el: s
+  }))
     .concat(
       state.files.filter(f => isScript(f.name))
     )
 
-  state.loadRemote = state
+  const loadRemote = state
     .links
-    .filter(l => l.type === 'js' && !l.content)
+    .filter(l => l.type === 'js')
     .concat(scripts.filter(s => s.src).map(s =>
       ({ url: s.src, type: 'js', el: s })
     ))
@@ -100,7 +99,7 @@ function init(data) {
     .forEach(loadStyle)
 
   Promise
-    .all(state.loadRemote.map(loadRemoteScript))
+    .all(loadRemote.map(loadRemoteScript))
     .then(loaded => {
       const errors = loaded.filter(l => l)
 
@@ -110,7 +109,7 @@ function init(data) {
         })
       } else {
         send('loaded')
-        state.load.forEach(flemsLoadScript)
+        load.forEach(flemsLoadScript)
       }
     })
 }
@@ -173,6 +172,10 @@ function loadStyle(css) {
 
 function loadRemoteScript(script) {
   return new Promise((resolve, reject) => {
+    if (script.content) {
+      flemsLoadScript(script)
+      return resolve()
+    }
     const el = create('script', {
       charset: 'utf-8',
       onload: () => resolve(),
