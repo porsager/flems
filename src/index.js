@@ -3,7 +3,6 @@ import m from 'mithril'
 
 import app from './app'
 
-import { assign } from './utils'
 import Model, { defaults } from './model'
 import Actions from './actions'
 import message from './message'
@@ -29,12 +28,7 @@ function Flems(dom, state = {}, runtimeUrl) {
     focus: model.focus,
     reload: () => actions.refresh({ force: true }),
     onchange: fn => actions.onchange = fn,
-    set: state => {
-      assign(model.state, state)
-      model.selected(state.selected)
-      actions.refresh()
-      m.redraw()
-    }
+    set: actions.setState
   }
 }
 

@@ -1,6 +1,6 @@
 import m from 'mithril'
 import compilers from './compilers'
-import { isCss, ext, createFlemsIoLink } from './utils'
+import { isCss, ext, assign, createFlemsIoLink } from './utils'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
 
@@ -26,17 +26,22 @@ export default function(model) {
     setShareUrl,
     fileChange,
     initIframe,
+    setState,
     resizing,
     refresh,
     getLink,
     select
   }
 
-  Promise.all(model.state.links.map(getLink)).then(() =>
-    refresh({ force: true })
-  )
+  getLinks()
 
   return actions
+
+  function getLinks() {
+    Promise.all(model.state.links.map(getLink)).then(() =>
+      refresh({ force: true })
+    )
+  }
 
   function change(fn) {
     return function(value) {
@@ -47,6 +52,17 @@ export default function(model) {
 
   function changed() {
     actions.onchange(model.state)
+  }
+
+  function setState(state) {
+    assign(model.state, state)
+    getLinks()
+
+    if (model.state.selected !== state.selected)
+      model.selected(state.selected)
+
+    refresh()
+    m.redraw()
   }
 
   function setShareUrl({ dom }) {
@@ -126,6 +142,8 @@ export default function(model) {
   function getLink(link) {
     if (link.url in model.linkContent)
       return
+
+    model.linkContent[link.url] = undefined
 
     return m.request(link.url, {
       deserialize: v => v
