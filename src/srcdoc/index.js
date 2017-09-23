@@ -23,11 +23,12 @@ monkeys.forEach(monkey => {
 window.p = patch(null, 'print')
 
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
-  err.currentScript = currentScript
-  consoleOutput(String(err), 'error', err || {
+  err = err || {
     message: msg,
     stack: (file || 'unknown') + ':' + line + ':' + col
-  })
+  }
+  err.currentScript = currentScript
+  consoleOutput(String(err), 'error', err)
 }
 
 window.addEventListener('resize', () => send('resize'))
