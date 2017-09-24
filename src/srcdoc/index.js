@@ -12,7 +12,7 @@ delete window.frameElement
 
 Error.stackTraceLimit = Infinity
 
-const monkeys = ['log', 'error', 'warn', 'info', 'time', 'timeEnd']
+const monkeys = ['log', 'error', 'trace', 'warn', 'info', 'time', 'timeEnd']
     , log = window.console.log
 
 monkeys.forEach(monkey => {
