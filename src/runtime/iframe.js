@@ -13,7 +13,7 @@ const iframe = (model, actions) =>
     name: model.id,
     title: 'Runtime iframe',
     style: b.pointerEvents(model.dragging && 'none').style,
-    sandbox: 'allow-modals allow-forms allow-scripts allow-same-origin allow-popups',
+    sandbox: 'allow-modals allow-forms allow-scripts allow-popups',
     allowfullscreen: true,
     frameborder: '0',
     oncreate: vnode => actions.initIframe(vnode.dom)
