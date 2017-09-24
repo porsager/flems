@@ -113,7 +113,7 @@ export default function(model) {
     if (!model.console.input)
       return
 
-    model.iframe.contentWindow.flemsMessage({
+    model.iframe.contentWindow.postMessage({
       name: 'eval',
       content: model.console.input
     }, '*')
@@ -177,7 +177,7 @@ export default function(model) {
   function iframeReady() {
     Promise.all(model.state.files.filter(f => f.content).map(getContent))
     .then(files => {
-      model.iframe.contentWindow.flemsMessage({
+      model.iframe.contentWindow.postMessage({
         name: 'init',
         content: {
           id: model.id,
@@ -258,7 +258,7 @@ export default function(model) {
       changed()
 
       if (model.state.autoReload && (file.type === 'css' || isCss(file.name))) {
-        model.iframe.contentWindow.flemsMessage({
+        model.iframe.contentWindow.postMessage({
           name: 'css',
           content: {
             name: file.name,

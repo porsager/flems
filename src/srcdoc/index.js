@@ -8,6 +8,7 @@ let currentScript
 const parent = window.parent
 
 delete window.parent
+delete window.frameElement
 
 Error.stackTraceLimit = Infinity
 
@@ -32,8 +33,7 @@ window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
 }
 
 window.addEventListener('resize', () => send('resize'))
-
-window.flemsMessage = data => {
+window.addEventListener('message', ({ data }) => {
   if (data.name === 'init') {
     init(data.content)
   } else if (data.name === 'css') {
@@ -48,15 +48,13 @@ window.flemsMessage = data => {
       consoleOutput(String(err), 'error', { stack: '' })
     }
   }
-}
+})
 
 function send(name, content) {
-  parent.flemsMessage({
-    data: {
-      flems: id,
-      name: name,
-      content: content
-    }
+  parent.postMessage({
+    flems: id,
+    name: name,
+    content: content
   }, '*')
 }
 
