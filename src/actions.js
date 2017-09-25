@@ -56,6 +56,17 @@ export default function(model) {
 
   function setState(state) {
     assign(model.state, state)
+
+    model.linkContent = model.state.links.reduce((acc, link) => {
+      acc[link.url] = model.linkContent[link.url]
+      return acc
+    }, {})
+
+    model.linkPatched = model.state.links.reduce((acc, link) => {
+      acc[link.url] = model.linkPatched[link.url]
+      return acc
+    }, {})
+
     getLinks()
 
     if (model.state.selected !== state.selected)
