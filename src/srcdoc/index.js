@@ -179,7 +179,8 @@ function loadRemoteScript(script) {
       charset: 'utf-8',
       onload: () => resolve(),
       onerror: err => resolve([script.url, err]),
-      async: false,
+      async: script.el && script.el.async,
+      defer: script.el && script.el.defer,
       src: script.url
     })
 
@@ -196,7 +197,7 @@ function flemsLoadScript(script) {
     onerror: err => consoleOutput(String(err), 'error', err)
   })
 
-  currentScript = script
+  currentScript = script.name
   script.el
     ? script.el.parentNode.replaceChild(el, script.el)
     : document.body.appendChild(el)

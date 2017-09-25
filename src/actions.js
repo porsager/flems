@@ -219,7 +219,7 @@ export default function(model) {
   }
 
   function consoleOutput(data) {
-    const file = model.findFile(data.file && data.file.name)
+    const file = model.findFile(data.file.name)
 
     if (file && data.type === 'error' && data.content.indexOf('<') > -1 && !window.Babel) {
       file.compiler = 'babel'
