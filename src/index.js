@@ -33,6 +33,7 @@ function Flems(dom, state = {}, runtimeUrl) {
 }
 
 Flems.defaults = defaults
+Flems.version = process.env.FLEMS_VERSION // eslint-disable-line
 
 export default Flems
 

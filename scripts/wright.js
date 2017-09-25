@@ -6,6 +6,7 @@ const wright = require('wright')
     , string = require('rollup-plugin-string')
     , buble = require('rollup-plugin-buble')
     , codemirrorCss = require('./codemirrorcss')
+    , pkg = require('../package.json')
 
 wright({
   main: 'scripts/wright.html',
@@ -25,7 +26,10 @@ function roll(dev) {
     input: 'src/index.js',
     cache: cache,
     plugins: [
-      replace({ codemirrorStyles: JSON.stringify(codemirrorCss) }),
+      replace({
+        'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
+        codemirrorStyles: JSON.stringify(codemirrorCss)
+      }),
       string({ include: 'src/**/*.svg' }),
       commonjs(),
       nodeResolve(),

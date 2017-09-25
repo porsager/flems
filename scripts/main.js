@@ -9,12 +9,14 @@ const rollup = require('rollup')
     , replace = require('rollup-plugin-replace')
     , string = require('rollup-plugin-string')
     , codemirrorCss = require('./codemirrorcss')
+    , pkg = require('../package.json')
 
 // UMD
 rollup.rollup({
   input: 'src/index.js',
   plugins: [
     replace({
+      'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
       'window.m = m // wright hmr': '',
       'b.setDebug(true)': '',
       codemirrorStyles: JSON.stringify(codemirrorCss)
