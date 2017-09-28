@@ -17,6 +17,10 @@ wright({
     watch: 'src/**/*.js',
     path: 'flems.js',
     compile: roll
+  },
+  execute: {
+    watch: 'src/srcdoc/index.js',
+    command: 'npm run build:runtime'
   }
 })
 
