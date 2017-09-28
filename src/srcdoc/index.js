@@ -3,9 +3,10 @@ import 'mithril/promise/promise'
 import { isScript, isHtml, isCss } from '../utils'
 
 let id = window.name
-let currentScript
+let currentScript = {}
 
 const parent = window.parent
+const blobUrls = {}
 
 delete window.parent
 delete window.frameElement
@@ -26,10 +27,11 @@ window.p = patch(null, 'print')
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   err = err || {
     message: msg,
-    stack: (file || 'unknown') + ':' + line + ':' + col
+    stack: 'at ' + (file || currentScript.name || 'unknown') + ':' + line + ':' + col
   }
-  err.currentScript = currentScript
-  consoleOutput(String(err), 'error', err)
+
+  err.currentScript = currentScript.name
+  consoleOutput(err.message || String(err), 'error', err)
 }
 
 window.addEventListener('resize', () => send('resize'))
@@ -141,14 +143,14 @@ function consoleOutput(content, type, err, slice = 0) {
 }
 
 const locationRegex = /(.*)[ @(](.*):([\d]*):([\d]*)/i
-function parseStackLine(line) {
-  const match = line.trim().match(locationRegex)
+function parseStackLine(string) {
+  const [match, func, file, line, column] = (' ' + string.trim()).match(locationRegex) || []
 
   return match && {
-    function: match[1].replace(/^at ?/, ''),
-    file: match[2],
-    line: parseInt(match[3], 10),
-    column: parseInt(match[4], 10)
+    function: func.replace(/^ ?(global code|at) ?/, ''),
+    file: blobUrls[file] || file,
+    line: parseInt(line, 10),
+    column: parseInt(column, 10)
   }
 }
 
@@ -189,13 +191,18 @@ function loadRemoteScript(script) {
 }
 
 function flemsLoadScript(script) {
+  const url = URL.createObjectURL(new Blob([script.content], { type : 'application/js' }))
+  blobUrls[url] = script.name
   const el = create('script', {
+    src: url,
     charset: 'utf-8',
-    textContent: script.content + '\n//# sourceURL=' + script.name,
+    async: false,
+    defer: false,
     onerror: err => consoleOutput(String(err), 'error', err)
   })
 
-  currentScript = script.name
+  currentScript = script
+
   script.el
     ? script.el.parentNode.replaceChild(el, script.el)
     : document.body.appendChild(el)
