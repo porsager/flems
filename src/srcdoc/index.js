@@ -103,9 +103,7 @@ function init(data) {
       const errors = loaded.filter(l => l)
 
       if (errors.length > 0) {
-        send('error', {
-          message: 'Error loading:\n\t' + errors.join('\n\t')
-        })
+        consoleOutput('Error loading:\n\t' + errors.join('\n\t'), 'error', { stack: '' })
       } else {
         send('loaded')
         load.forEach(flemsLoadScript)

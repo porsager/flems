@@ -10,8 +10,6 @@ export default {
         actions.loaded()
       else if (data.name === 'console')
         actions.consoleOutput(data.content)
-      else if (data.name === 'error')
-        actions.error(data.content)
       else if (data.name === 'resize')
         actions.resizing()
 
