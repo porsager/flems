@@ -151,7 +151,7 @@ export default function(model) {
   }
 
   function getLink(link) {
-    if (link.url in model.linkContent)
+    if (model.linkContent[link.url])
       return
 
     model.linkContent[link.url] = undefined
