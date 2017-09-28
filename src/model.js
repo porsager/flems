@@ -20,6 +20,7 @@ const defaults = () => ({
   reloadButton  : true,
   console       : true,
   autoReload    : true,
+  autoFocus     : false,
   autoHeight    : false,
   files : [{
     name: '.html',

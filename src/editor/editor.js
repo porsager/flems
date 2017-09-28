@@ -115,6 +115,8 @@ export default (model, actions) =>
         }
       })
 
+      const initialDoc = cm.getDoc()
+
       model.refreshCm.map(() => cm.refresh())
       model.focus.map(({ line, column }) => {
         cm.setCursor(line - 1, column - 1)
@@ -146,8 +148,12 @@ export default (model, actions) =>
         if (content !== doc.getValue())
           doc.setValue(content)
 
+        const focusAfter = cm.getDoc() !== initialDoc || model.state.autoFocus
+
         cm.swapDoc(doc)
-        cm.focus()
+
+        if (focusAfter)
+          cm.focus()
       })
 
       if (model.state.autoHeight)
