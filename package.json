@@ -1,6 +1,6 @@
 {
   "name": "flems",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A standalone web playground / sandbox",
   "browser": "dist/flems.html",
   "main": "src/index.js",
@@ -10,7 +10,7 @@
     "build:runtime": "node scripts/runtime",
     "build:standalone": "node scripts/standalone",
     "dev": "node scripts/wright",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "keywords": [
     "playground",
