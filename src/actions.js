@@ -274,7 +274,7 @@ export default function(model) {
           content: {
             name: file.name,
             url: file.url,
-            content: model.linkPatched[file.url]
+            content: model.linkPatched[file.url] || file.content
           }
         }, '*')
       } else {
