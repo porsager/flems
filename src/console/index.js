@@ -87,7 +87,7 @@ export default (model, actions) =>
             .style
         }, [
           m('div' + b.flexGrow(1), log.content),
-          log.stack && m('div' + b.ta('right').overflow('hidden'), {
+          log.stack && m('div' + b.ta('right').flexShrink(0).overflow('hidden'), {
             style: b.maxHeight(!log.expand && log.type !== 'error' && 18).style
           }, log.stack.map(s =>
             m('div', [
