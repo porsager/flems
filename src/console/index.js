@@ -91,7 +91,7 @@ export default (model, actions) =>
             style: b.maxHeight(!log.expand && log.type !== 'error' && 18).style
           }, log.stack.map(s =>
             m('div', [
-              (s.function || '') + 'at ',
+              (s.function || '') + ' at ',
               m('a' + (s.file ? b.textDecoration('underline').cursor('pointer') : ''), {
                 onclick: e => {
                   e.stopPropagation()

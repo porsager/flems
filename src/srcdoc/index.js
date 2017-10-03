@@ -151,7 +151,7 @@ function parseStackLine(string) {
   const [match, func, file, line, column] = (' ' + string.trim()).match(locationRegex) || []
 
   return match && {
-    function: func.replace(/^ ?(global code|at) ?/, ''),
+    function: func.trim().replace(/^(global code|at) ?/, ''),
     file: blobUrls[file] || file,
     line: parseInt(line, 10),
     column: parseInt(column, 10)
