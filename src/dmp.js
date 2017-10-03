@@ -1591,11 +1591,19 @@ function serialize(diff) {
 }
 
 function deserialize(diff) {
-  return diff.map(d => ({
-    diffs: d.slice(0, -4),
-    length1: d[d.length - 4],
-    length2: d[d.length - 3],
-    start1: d[d.length - 2],
-    start2: d[d.length - 1]
-  }))
+  return diff.map(d => {
+    return {
+      diffs: Array.isArray(d[0])
+        ? d.slice(0, -4)
+        : [
+          [0, d[1]],
+          [d[0], d[2]],
+          [0, d[3]]
+        ],
+      length1: d[d.length - 4],
+      length2: d[d.length - 3],
+      start1: d[d.length - 2],
+      start2: d[d.length - 1]
+    }
+  })
 }
