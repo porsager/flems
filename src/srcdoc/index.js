@@ -11,6 +11,10 @@ const blobUrls = {}
 delete window.parent
 delete window.frameElement
 
+document.write = function(html) {
+  document.body.innerHTML += html
+}
+
 Error.stackTraceLimit = Infinity
 
 const monkeys = ['log', 'error', 'trace', 'warn', 'info', 'time', 'timeEnd']
