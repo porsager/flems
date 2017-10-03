@@ -168,8 +168,8 @@ export default function(model) {
         ? patch(content, link.patches)[0]
         : content
 
-      if (model.state.selected === link.name)
-        select(link.name)
+      if (model.state.selected === link.url)
+        select(link.url)
     }).catch(() => {
       // Ignore errors and stay with script src=url
     })

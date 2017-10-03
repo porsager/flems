@@ -32,7 +32,7 @@ function linkTabs(model, actions) {
         target: '_blank',
         onclick: e => model.linkContent[link.url] && e.preventDefault()
       }, link.name),
-      () => model.linkContent[link.url] && actions.select(link.name),
+      () => model.linkContent[link.url] && actions.select(link.url),
       link === model.selectedFile(),
       model
     )

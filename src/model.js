@@ -43,7 +43,8 @@ export default function(dom, state, runtimeUrl) {
   const id = randomId()
       , selected = stream(state.selected)
       , findFile = name =>
-        state.files.filter(f => f.name === name)[0] || state.links.filter(l => l.name === name)[0]
+        state.files.filter(f => f.name === name)[0] ||
+        state.links.filter(l => l.url === name)[0]
       , selectedFile = selected.map(findFile)
 
   state.middle = Math.min(Math.max(state.middle, 0), 100)
@@ -119,7 +120,7 @@ function validateAndCleanState(state) {
   })
 
   if (!clean.files.concat(clean.links).some(f => f.name === clean.selected))
-    clean.selected = (clean.files[0] || clean.links[0]).name
+    clean.selected = (clean.files[0] || {}).name || (clean.links[0] || {}).url
 
   return clean
 }
