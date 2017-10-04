@@ -148,11 +148,13 @@ function consoleOutput(content, type, err, slice = 0) {
 
 const locationRegex = /(.*)[ @(](.*):([\d]*):([\d]*)/i
 function parseStackLine(string) {
-  const [match, func, file, line, column] = (' ' + string.trim()).match(locationRegex) || []
+  const [match, func, fileName, line, column] = (' ' + string.trim()).match(locationRegex) || []
+      , file = blobUrls[fileName]
 
   return match && {
     function: func.trim().replace(/^(global code|at) ?/, ''),
-    file: blobUrls[file] || file,
+    select: file ? (file.url || file.name) : fileName,
+    file: file ? file.name : fileName,
     line: parseInt(line, 10),
     column: parseInt(column, 10)
   }
@@ -196,7 +198,7 @@ function loadRemoteScript(script) {
 
 function flemsLoadScript(script) {
   const url = URL.createObjectURL(new Blob([script.content], { type : 'application/js' }))
-  blobUrls[url] = script.name
+  blobUrls[url] = script
   const el = create('script', {
     src: url,
     charset: 'utf-8',
