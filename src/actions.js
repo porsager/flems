@@ -231,7 +231,7 @@ export default function(model) {
   }
 
   function consoleOutput(data) {
-    const file = model.findFile(data.file)
+    const file = model.findFile(model.state, data.file)
 
     if (file && data.type === 'error' && data.content.indexOf('<') > -1 && !window.Babel) {
       file.compiler = 'babel'
@@ -240,7 +240,7 @@ export default function(model) {
     }
 
     data.stack.forEach(s => {
-      const file = model.findFile(s.file)
+      const file = model.findFile(model.state, s.file)
       if (!file || !(file.name in model.sourceMaps))
         return
 

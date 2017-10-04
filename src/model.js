@@ -6,6 +6,9 @@ import b from 'bss'
 const scripts = document.getElementsByTagName('script')
     , flems = scripts[scripts.length - 1]
     , runtimeUrlGuess = endsWith('flems.html', flems ? flems.src : '') && flems.src
+    , findFile = (state, name) =>
+      state.files.filter(f => f.name === name)[0] ||
+      state.links.filter(l => l.url === name)[0]
 
 const defaults = () => ({
   middle        : 50,
@@ -42,10 +45,7 @@ export default function(dom, state, runtimeUrl) {
 
   const id = randomId()
       , selected = stream(state.selected)
-      , findFile = name =>
-        state.files.filter(f => f.name === name)[0] ||
-        state.links.filter(l => l.url === name)[0]
-      , selectedFile = selected.map(findFile)
+      , selectedFile = selected.map(s => findFile(state, s))
 
   state.middle = Math.min(Math.max(state.middle, 0), 100)
   selected.map(name => state.selected = name)
@@ -119,7 +119,7 @@ function validateAndCleanState(state) {
     f.name = f.name || f.url.slice(f.url.lastIndexOf('/') + 1)
   })
 
-  if (!clean.files.concat(clean.links).some(f => f.name === clean.selected))
+  if (!findFile(clean, clean.selected))
     clean.selected = (clean.files[0] || {}).name || (clean.links[0] || {}).url
 
   return clean
