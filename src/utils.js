@@ -18,7 +18,7 @@ export function assign(obj, obj2) {
 export const createFlemsIoLink = state => {
   return 'https://flems.io/#0=' + lz.compressToEncodedURIComponent(
     JSON.stringify(state)
-   )
+  )
 }
 
 export function find(fn, array) {
@@ -30,10 +30,10 @@ export function find(fn, array) {
   return match
 }
 
-export const memoize = (fn, cache = new Map()) => item =>
-  cache.has(item)
-    ? cache.get(item)
-    : cache.set(item, fn(item)).get(item)
+export const memoize = (fn, cache = {}) => item =>
+  item in cache
+    ? cache[item]
+    : cache[item] = fn(item)
 
 export const ext = f => f.lastIndexOf('.') > -1 && f.slice(f.lastIndexOf('.') + 1)
 

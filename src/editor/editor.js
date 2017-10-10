@@ -73,7 +73,7 @@ export default (model, actions) =>
     )
   , {
     oncreate: ({ dom }) => {
-      const docs = new Map()
+      const docs = {}
 
       const cm = CodeMirror(dom, {
         theme: 'material',
@@ -128,7 +128,7 @@ export default (model, actions) =>
         if (!file)
           return
 
-        let doc = docs.get(file)
+        let doc = docs[file.url || file.name]
 
         const content = file.content || model.linkPatched[file.url] || ''
 
@@ -142,7 +142,7 @@ export default (model, actions) =>
             actions.fileChange(file, doc.getValue())
           )
 
-          docs.set(file, doc)
+          docs[file.url || file.name] = doc
         }
 
         if (content !== doc.getValue())
