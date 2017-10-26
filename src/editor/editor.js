@@ -37,6 +37,11 @@ const modes = {
   css: 'css'
 }
 
+const noSmartIndent = {
+  ',': true,
+  '.': true
+}
+
 export default (model, actions) =>
   m('.editor'
   + b.position('absolute')
@@ -94,7 +99,7 @@ export default (model, actions) =>
                 , before = cm.getRange({ line: 0, ch: 0 }, cursor).trim()
                 , line = cm.getRange({ line: cursor.line, ch: 0 }, cursor).trim()
 
-            cm.setOption('smartIndent', line.charAt(0) !== ',' && !endsWith(before, '=>'))
+            cm.setOption('smartIndent', !(line.charAt(0) in noSmartIndent) && !endsWith(before, '=>'))
             cm.execCommand('newlineAndIndent')
           },
           Tab: cm => {
