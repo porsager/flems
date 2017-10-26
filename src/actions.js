@@ -216,10 +216,15 @@ export default function(model) {
       return file
 
     return compile(file).then(result => {
-      model.sourceMaps[file.name] = result.map
+      if (result.error)
+        consoleOutput(result.error)
+
+      if (result.map)
+        model.sourceMaps[file.name] = result.map
+
       return {
         name: file.name,
-        content: result.code
+        content: result.code || ''
       }
     }).catch(err => {
       consoleOutput({
