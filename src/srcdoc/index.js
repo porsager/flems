@@ -139,7 +139,7 @@ function consoleOutput(content, type, err, slice = 0) {
 
   send('console', {
     file: err.currentScript,
-    content: content,
+    content: content.replace(/\\n/g, '\n'),
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
     type: type,
     date: new Date()
