@@ -81,12 +81,16 @@ export default (model, actions) =>
           .alignItems('center')
         , {
           onclick: () => log.expand = !log.expand,
-          title: log.date,
-          style: b
-            .c(log.type === 'error' && 'red')
-            .style
+          title: log.date
         }, [
-          m('div' + b.flexGrow(1), log.content),
+          m('div' + b.flexGrow(1)
+          ,
+            log.content[0].indexOf('%c') > -1 && log.content.length > 1
+              ? log.content[0].split('%c').map((p, i) =>
+                  m('span' + b(log.content[i] || ''), p)
+                )
+              : log.content.map(p => m('span' + b.d('inline-block').mr(10), p))
+          ),
           log.stack && m('div' + b.ta('right').flexShrink(0).overflow('hidden'), {
             style: b.maxHeight(!log.expand && log.type !== 'error' && 18).style
           }, log.stack.map(s =>

@@ -120,7 +120,9 @@ function init(data) {
 function patch(original, monkey) {
   return function() {
     (original || log).apply(console, arguments)
-    consoleOutput([].slice.apply(arguments).map(a => inspect(a)).join('\n'), monkey, new Error(), 1)
+    consoleOutput([].slice.apply(arguments).map(a =>
+      (typeof a === 'string' ? a : inspect(a).replace(/\\n/g, '\n'))
+    ), monkey, new Error(), 1)
   }
 }
 
@@ -139,7 +141,7 @@ function consoleOutput(content, type, err, slice = 0) {
 
   send('console', {
     file: err.currentScript,
-    content: content.replace(/\\n/g, '\n'),
+    content: Array.isArray(content) ? content : [content],
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
     type: type,
     date: new Date()
