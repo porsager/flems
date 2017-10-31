@@ -91,6 +91,7 @@ export default (model, actions) =>
         foldGutter: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         tabSize: 2,
+        keyMap: 'sublime',
         extraKeys: {
           'Alt-F': 'findPersistent',
           'Shift-Tab': 'indentLess',
