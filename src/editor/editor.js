@@ -121,6 +121,8 @@ export default (model, actions) =>
         }
       })
 
+      cm.on('gutterClick', selectLineNumber)
+
       const initialDoc = cm.getDoc()
 
       model.refreshCm.map(() => cm.refresh())
@@ -166,3 +168,46 @@ export default (model, actions) =>
         model.cmHeight = dom.querySelector('.CodeMirror-sizer').offsetHeight
     }
   })
+
+function selectLineNumber(cm, line, gutter, e) {
+  if (gutter === 'CodeMirror-foldgutter')
+    return
+
+  const selections = cm.listSelections()
+      , others = e.ctrlKey || e.metaKey ? selections : []
+      , from = e.shiftKey && selections.length
+        ? selections[0].anchor.line
+        : line
+
+  let to = e.shiftKey && selections.length && from > line
+    ? line
+    : line + 1
+
+  update()
+
+  const move = function(e) {
+    const curLine = cm.lineAtHeight(e.clientY, 'client')
+    if (curLine !== to) {
+      to = curLine
+      update()
+    }
+  }
+
+  const up = (e) => {
+    window.removeEventListener('mouseup', up)
+    window.removeEventListener('mousemove', move)
+  }
+  window.addEventListener('mousemove', move)
+  window.addEventListener('mouseup', up)
+
+  function update() {
+    cm.setSelections(
+      others.concat([{
+        anchor: CodeMirror.Pos(from, to > from ? 0 : null),
+        head: CodeMirror.Pos(to, 0)
+      }]),
+      others.length,
+      { origin: '*mouse' }
+    )
+  }
+}
