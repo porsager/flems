@@ -69,8 +69,12 @@ function init(data) {
 
   const state = data.state
   const body = state.files.filter(f => isHtml(f.name))[0]
+  const title = document.title
 
   document.documentElement.innerHTML = body ? body.content : ''
+
+  if (!document.title)
+    document.title = title
 
   const scripts = Array
     .prototype
