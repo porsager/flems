@@ -26,7 +26,13 @@ monkeys.forEach(monkey => {
   window.console[monkey] = patch(original, monkey)
 })
 
-window.p = patch(null, 'print')
+
+const print = patch(null, 'print')
+
+window.p = function(first) {
+  print.apply(null, arguments)
+  return first
+}
 
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   err = err || {
