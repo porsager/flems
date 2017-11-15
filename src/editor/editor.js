@@ -95,6 +95,8 @@ export default (model, actions) =>
         extraKeys: {
           'Alt-F': 'findPersistent',
           'Shift-Tab': 'indentLess',
+          'Cmd-L': (cm, e) => { e.codemirrorIgnore = true },
+          'Ctrl-L': (cm, e) => { e.codemirrorIgnore = true },
           Enter: cm => {
             const cursor = cm.getCursor()
                 , before = cm.getRange({ line: 0, ch: 0 }, cursor).trim()
