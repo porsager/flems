@@ -35,10 +35,10 @@ window.p = function(first) {
 }
 
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
-  err = err || {
-    message: msg,
-    stack: 'at ' + (file || currentScript.name || 'unknown') + ':' + line + ':' + col
-  }
+  err = err || { message: msg }
+  err.stack = String(err) === err.stack
+    ? ('at ' + (file || currentScript.name || 'unknown') + ':' + line + ':' + col)
+    : err.stack
 
   err.currentScript = currentScript.name
   consoleOutput(err.message || String(err), 'error', err)
