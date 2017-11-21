@@ -29,6 +29,7 @@ function roll(dev) {
   return rollup.rollup({
     input: 'src/index.js',
     cache: cache,
+    treeshake: false,
     plugins: [
       replace({
         'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
