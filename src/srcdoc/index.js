@@ -26,13 +26,7 @@ monkeys.forEach(monkey => {
   window.console[monkey] = patch(original, monkey)
 })
 
-
-const print = patch(null, 'print')
-
-window.p = function(first) {
-  print.apply(null, arguments)
-  return first
-}
+window.p = patch(null, 'print', true)
 
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   err = err || { message: msg }
@@ -127,12 +121,13 @@ function init(data) {
     })
 }
 
-function patch(original, monkey) {
-  return function() {
+function patch(original, monkey, returnFirst) {
+  return function(first) {
     (original || log).apply(console, arguments)
     consoleOutput([].slice.apply(arguments).map(a =>
       (typeof a === 'string' ? a : inspect(a).replace(/\\n/g, '\n'))
     ), monkey, new Error(), 1)
+    return returnFirst && first
   }
 }
 
