@@ -9,7 +9,7 @@ export function endsWith(suffix, str) {
 
 export function assign(obj, obj2) {
   for (const key in obj2) {
-    if (obj2.hasOwnProperty(key))
+    if (Object.prototype.hasOwnProperty.call(obj2, key))
       obj[key] = obj2[key]
   }
   return obj
