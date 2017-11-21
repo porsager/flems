@@ -1,30 +1,33 @@
-# Flems
+# Flems 
 
-Used for [flems.io](https://flems.io) - try it out
+> As seen on [Flems.io](https://flems.io)
 
 Flems is a static web app - no strings attached - browser code playground.
 It's great for documentation, examples, presentations, issues and what not.
 
+[![](https://a.flems.io/intro.gif)](https://flems.io)
+
+## Getting started
 Just load a single file [`flems.html`](https://flems.io/flems.html) in a script tag to get started. - [why should i load an .html file as a script tag?](#html-script-tag)
 
 ``` html
 <script src="https://flems.io/flems.html" type="text/javascript" charset="utf-8"></script>
 <script>
-    Flems(document.body, {
-        files: [{
-            name: 'app.js',
-            content: 'm.render(document.body, m("h1", "Hello world"))'
-        }],
-        links: [{
-            name: 'mithril',
-            type: 'js',
-            url: 'https://unpkg.com/mithril'
-        }]
-    })
+Flems(document.body, {
+    files: [{
+        name: 'app.js',
+        content: 'm.render(document.body, m("h1", "Hello world"))'
+    }],
+    links: [{
+        name: 'mithril',
+        type: 'js',
+        url: 'https://unpkg.com/mithril'
+    }]
+})
 </script>
 ```
 
-[Flems of the above](https://flems.io/#0=N4IgzgpgNhDGAuEAmIBcIB0ALeBbKIANCAGYCWMYaA2qAHYCGuEamO+RIsA9nYn6wA8WAIwA+ADp0ABNIAqWMmGlLpAMRi4wUwQHpRkuoKRkAbiqQBeCaU3aQhvSdOOADodkaIWlcogMwCgBPaW8AI2QkZBUZJG5YAFdmPgZ4Ml5Q+FgMHJ1ddx0wWAAnMld4aTBi2GsQHHhXMFRdXToIAA94DBI7DHTdHu8wbDwoG2l4INcIWsRO3QArBlMAkrL4cdgsBmLIeFqE+BIAWgAOGzE9ItLyx2v1sWkpWVkAdzI6ONeMLy0ACkGWkI0mAzxe4PIlFQ0loYPB8OkjGY0IA5AxXK4MAswCjCHCES8eHwIHxUbgMMUSVFin8JFI6fA4olkl0wtwkEE8fSJHhaXURDZgTYABLQKDcaSvbjFKBIGwASjpdHlKPx4IAvgBdPEyAlQD4AayaMNBuoJLyREDJZHgWFKUFxaoJk2mqOxjrN5ukCRlqPqjWaugSdFcBoA5hgeLhdLgbXaKKrPRrNfj1YqjLp7rcQOrCPQmCx0FiqMQifx4Kwc3mQJbWJGwCWuLxy6xRMDXCCwbgdmGPsd4NxXNCAMwABlc7QA3GC5vBjgx9WG6NDYCTEMVp7qSM3jiQmMFoWAGHQwMdIKUSJv1fS6ABiQHKU2ybvFXvL6QAJnH7WkABZv5ushYBAZBhjg0L-gBYJsu0Z7bF80KjtISFfhO0ivmEDB-KOhA4ThGDDgArOm6o5pq6pAA)
+[Flems.io of the above](https://flems.io/#0=N4IgzgpgNhDGAuEAmIBcIB0ALeBbKIANCAGYCWMYaA2qAHYCGuEamO+RIsA9nYn6wA8WAIwA+ADp0ABNIAqWMmGlLpAMRi4wUwQHpRkuoKRkAbiqQBeCaU3aQhvSdOOADodkaIWlcogMwCgBPaW8AI2QkZBUZJG5YAFdmPgZ4Ml5Q+FgMHJ1ddx0wWAAnMld4aTBi2GsQHHhXMFRdXToIAA94DBI7DHTdHu8wbDwoG2l4INcIWsRO3QArBlMAkrL4cdgsBmLIeFqE+BIAWgAOGzE9ItLyx2v1sWkpWVkAdzI6ONeMLy0ACkGWkI0mAzxe4PIlFQ0loYPB8OkjGY0IA5AxXK4MAswCjCHCES8eHwIHxUbgMMUSVFin8JFI6fA4olkl0wtwkEE8fSJHhaXURDZgTYABLQKDcaSvbjFKBIGwASjpdHlKPx4IAvgBdPEyAlQD4AayaMNBuoJLyREDJZHgWFKUFxaoJk2mqOxjrN5ukCRlqPqjWaugSdFcBoA5hgeLhdLgbXaKKrPRrNfj1YqjLp7rcQOrCPQmCx0FiqMQifx4Kwc3mQJbWJGwCWuLxy6xRMDXCCwbgdmGPsd4NxXNCAMwABlc7QA3GC5vBjgx9WG6NDYCTEMVp7qSM3jiQmMFoWAGHQwMdIKUSJv1fS6ABiQHKU2ybvFXvL6QAJnH7WkABZv5ushYBAZBhjg0L-gBYJsu0Z7bF80KjtISFfhO0ivmEDB-KOhA4ThGDDgArOm6o5pq6pAA)
 
 ## Contents
 
@@ -44,7 +47,7 @@ The following extensions are handled for files (others are ignored)
 - `.js`
 - `.css`
 - `.ts` - Will be compiled by typescript
-- `.ls` - Will be compiled by livecript
+- `.ls` - Will be compiled by livescript
 
 The following compilers are currently only avaible for js files:
 - `ts` (typescript)
@@ -56,7 +59,7 @@ It is also possible to supply a function that receives the file and returns a pr
 function compile(file) {
     return new Promise(resolve => {
         return {
-            code: file.content.replace(/var /, 'const'), // Don't do this
+            code: file.content.replace(/var /g, 'const '), // Don't do this
             map: null // The JSON for a sourcemap
         }
     })
@@ -134,3 +137,4 @@ To allow you to use Flems with only a single file to be required the javascript 
 ## Thanks
 
 The [mithril community](https://gitter.im/mithriljs/mithril.js) has been an amazing help and source for feedback - Thanks to all of you!
+
