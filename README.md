@@ -5,7 +5,9 @@
 Flems is a static web app - no strings attached - browser code playground.
 It's great for documentation, examples, presentations, issues and what not.
 
+<p align="center">
 [![](https://a.flems.io/intro.gif)](https://flems.io)
+</p>
 
 ## Getting started
 Just load a single file [`flems.html`](https://flems.io/flems.html) in a script tag to get started. - [why should i load an .html file as a script tag?](#html-script-tag)
