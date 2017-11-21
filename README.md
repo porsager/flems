@@ -6,7 +6,9 @@ Flems is a static web app - no strings attached - browser code playground.
 It's great for documentation, examples, presentations, issues and what not.
 
 <p align="center">
-[![](https://a.flems.io/intro.gif)](https://flems.io)
+    <a href="https://flems.io">
+        <img src="https://a.flems.io/intro.gif" alt="Flems example">
+    </a>
 </p>
 
 ## Getting started
