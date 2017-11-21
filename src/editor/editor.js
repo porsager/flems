@@ -26,7 +26,10 @@ import logoIcon from '../icons/logo.svg'
 const logoIcon64 = btoa(logoIcon)
 
 const modes = {
-  html: 'htmlmixed',
+  html: {
+    name: 'htmlmixed',
+    lineWrapping: true
+  },
   js: {
     name: 'javascript',
     statementIndent: 2
@@ -142,12 +145,12 @@ export default (model, actions) =>
         let doc = docs[file.url || file.name]
 
         const content = file.content || model.linkPatched[file.url] || ''
+            , mode = modes[file.name.split('.').pop()] || 'javascript'
+
+        cm.setOption('lineWrapping', mode.lineWrapping || false)
 
         if (!doc) {
-          doc = CodeMirror.Doc(
-            content,
-            modes[file.name.split('.').pop()] || 'javascript'
-          )
+          doc = CodeMirror.Doc(content, mode)
 
           doc.on('change', e =>
             actions.fileChange(file, doc.getValue())
