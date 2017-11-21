@@ -49,9 +49,9 @@ window.addEventListener('message', ({ data }) => {
       : location.reload()
   } else if (data.name === 'eval') {
     try {
-      consoleOutput(window.eval(data.content) || 'undefined', 'log', { stack: '' }) // eslint-disable-line
+      console.log(window.eval(data.content)) // eslint-disable-line
     } catch (err) {
-      consoleOutput(String(err), 'error', { stack: '' })
+      console.error(err)
     }
   }
 })
@@ -143,10 +143,9 @@ function consoleOutput(content, type, err, slice = 0) {
     if (cutoff === -1 && s.function.indexOf('flemsLoadScript') > -1)
       cutoff = i
   })
-
   send('console', {
     file: err.currentScript,
-    content: Array.isArray(content) ? content : [content],
+    content: (Array.isArray(content) ? content : [content]).map(s => String(s)),
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
     type: type,
     date: new Date()
