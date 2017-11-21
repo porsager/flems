@@ -75,7 +75,7 @@ export default (model, actions) =>
           .alignItems('center')
           .p(2, 10)
           .minHeight(22)
-          .fs(12).borderBottom('1px solid #dedede')
+          .fs(12).borderBottom('1px solid #eee')
           .c('#555')
           .whiteSpace('pre-wrap')
           .alignItems('center')

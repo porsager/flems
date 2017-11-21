@@ -12,7 +12,8 @@ export default (model, actions) =>
   ,
     m('label'
       + b
-        .d('block')
+        .d('flex')
+        .ai('center')
         .m('0 6px 0 10px')
         .flexShrink(0)
         .c('blue')
