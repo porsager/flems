@@ -49,9 +49,9 @@ window.addEventListener('message', ({ data }) => {
       : location.reload()
   } else if (data.name === 'eval') {
     try {
-      console.log(window.eval(data.content)) // eslint-disable-line
+      consoleOutput(cleanLog([window.eval(data.content)]), 'log', { stack: '' }) // eslint-disable-line
     } catch (err) {
-      console.error(err)
+      consoleOutput(cleanLog([String(err)]), 'error', { stack: '' })
     }
   }
 })
@@ -124,11 +124,15 @@ function init(data) {
 function patch(original, monkey, returnFirst) {
   return function(first) {
     (original || log).apply(console, arguments)
-    consoleOutput([].slice.apply(arguments).map(a =>
-      (typeof a === 'string' ? a : inspect(a).replace(/\\n/g, '\n'))
-    ), monkey, new Error(), 1)
+    consoleOutput(cleanLog(arguments), monkey, new Error(), 1)
     return returnFirst && first
   }
+}
+
+function cleanLog(args) {
+  return [].slice.apply(args).map(a =>
+    (typeof a === 'string' ? a : inspect(a).replace(/\\n/g, '\n'))
+  )
 }
 
 function consoleOutput(content, type, err, slice = 0) {
