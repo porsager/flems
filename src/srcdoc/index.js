@@ -136,7 +136,7 @@ function cleanLog(args) {
 }
 
 function consoleOutput(content, type, err, slice = 0) {
-  const stack = err.stack.split('\n')
+  const stack = (err.stack || '').split('\n')
     .map(parseStackLine)
     .filter(a => a)
     .slice(slice)
