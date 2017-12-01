@@ -18,7 +18,7 @@
     "eval",
     "iframe"
   ],
-  "author": "Rasmus Porsager <rasmu@porsager.com",
+  "author": "Rasmus Porsager <rasmus@porsager.com>",
   "license": "WTFPL",
   "devDependencies": {
     "bss": "1.0.2",
