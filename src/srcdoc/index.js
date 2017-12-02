@@ -28,8 +28,9 @@ monkeys.forEach(monkey => {
 
 window.p = patch(null, 'print', true)
 
-window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
-  err = err || { message: msg }
+window.onerror = function(msg, file, line, col, err) {
+  err = (!err || typeof err === 'string') ? { message: msg || err } : err
+
   err.stack = (!err.stack || String(err) === err.stack)
     ? ('at ' + (file || currentScript.name || 'unknown') + ':' + line + ':' + col)
     : err.stack
