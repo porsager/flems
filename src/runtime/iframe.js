@@ -14,6 +14,7 @@ const iframe = (model, actions) =>
     title: 'Runtime iframe',
     style: b.pointerEvents(model.dragging && 'none').style,
     sandbox: 'allow-modals allow-forms allow-same-origin allow-scripts allow-popups',
+    allow: 'geolocation; microphone; camera; midi; encrypted-media',
     allowfullscreen: true,
     frameborder: '0',
     oncreate: vnode => actions.initIframe(vnode.dom)
