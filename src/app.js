@@ -10,7 +10,7 @@ import console from './console'
 export default (model, actions) =>
   m('.flems'
     + b
-      .fontFamily('Open Sans, sans-serif')
+      .fontFamily('-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"')
       .overflow('hidden')
       .position('relative')
       .d('flex')
