@@ -83,6 +83,8 @@ export default (model, actions) =>
   , {
     oncreate: ({ dom }) => {
       const docs = {}
+          , blockStart = /[\{\(\[]$/
+          , onlyBlocks = /[^\{\}\[\]\(\)]/g
 
       const cm = CodeMirror(dom, {
         theme: 'material',
@@ -103,11 +105,18 @@ export default (model, actions) =>
           'Ctrl-L': (cm, e) => { e.codemirrorIgnore = true },
           Enter: cm => {
             const cursor = cm.getCursor()
-                , before = cm.getRange({ line: 0, ch: 0 }, cursor).trim()
                 , line = cm.getRange({ line: cursor.line, ch: 0 }, cursor).trim()
+                , block = blockStart.test(line)
+                , blockClosed = !block && blockStart.test(line.replace(onlyBlocks, ''))
+                , fat = endsWith('=>', line)
+                , comma = endsWith(',', line)
 
-            cm.setOption('smartIndent', !(line.charAt(0) in noSmartIndent) && !endsWith('=>', before))
+            cm.setOption('smartIndent', blockClosed && !comma)
             cm.execCommand('newlineAndIndent')
+            cm.setOption('smartIndent', true)
+
+            if (fat || block)
+              cm.execCommand('insertSoftTab')
           },
           Tab: cm => {
             if (cm.somethingSelected())
