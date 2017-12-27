@@ -121,7 +121,7 @@ function bubble(background, count) {
       .d('inline-block')
       .br(50)
       .o(0.2)
-      .transition('all 0.5s')
+      .transition('opacity 0.5s')
   , {
     style: b.o(count > 0 && 1).style
   },

@@ -54,7 +54,7 @@ function tab(title, onclick, selected, model) {
   return m('.tab'
    + b.d('flex')
     .ai('center')
-    .transition('all 0.3s')
+    .transition('background 0.3s, color 0.3s')
     .minWidth(40)
     .maxWidth(200)
     .cursor('pointer')
