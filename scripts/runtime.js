@@ -20,6 +20,7 @@ module.exports = rollup.rollup({
   fs.writeFileSync('dist/runtime.js', runtime.code)
   fs.writeFileSync('dist/runtime.html', [
     '<!DOCTYPE html>',
+    '<meta charset="utf8">',
     '<script type="text/javascript" charset="utf-8">',
     '\t' + runtime.code + '//# sourceURL=runtime.js',
     '</script>'
