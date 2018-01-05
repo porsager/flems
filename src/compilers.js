@@ -30,7 +30,7 @@ const compilers = {
       map: result.sourceMapText
     }
   }),
-  babel: file => load('https://unpkg.com/babel-standalone@6/babel.min.js').then(() =>
+  babel: file => load('https://unpkg.com/@babel/standalone/babel.min.js').then(() =>
     window.Babel.transform(file.content, {
       presets: ['es2015', 'react'],
       sourceMaps: true,
