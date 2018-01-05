@@ -228,7 +228,7 @@ export default function(model) {
       }
     }).catch(err => {
       consoleOutput({
-        content: String(err),
+        content: [String(err)],
         stack: []
       })
       return file
