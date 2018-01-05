@@ -235,10 +235,16 @@ export default function(model) {
     })
   }
 
+  function tryBabel(log) {
+    return log.type === 'error'
+        && !window.Babel
+        && log.content.some(c => c.match(/Unexpected token '...|<'/))
+  }
+
   function consoleOutput(data) {
     const file = model.findFile(model.state, data.file)
 
-    if (file && data.type === 'error' && data.content.indexOf('<') > -1 && !window.Babel) {
+    if (file && tryBabel(data)) {
       file.compiler = 'babel'
       refresh()
       return
