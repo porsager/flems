@@ -32,7 +32,7 @@ const compilers = {
   }),
   babel: file => load('https://unpkg.com/@babel/standalone/babel.min.js').then(() =>
     window.Babel.transform(file.content, {
-      presets: ['es2015', 'react'],
+      presets: ['es2015', 'stage-2', 'react'],
       sourceMaps: true,
       sourceFileName: file.name,
       sourceMapTarget: file.name
