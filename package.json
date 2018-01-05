@@ -37,7 +37,6 @@
     "rollup-plugin-string": "2.0.2",
     "rollup-plugin-uglify": "2.0.1",
     "source-map": "0.6.1",
-    "uglify-js": "3.1.1",
     "wright": "1.0.1"
   }
 }
