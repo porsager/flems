@@ -1,6 +1,6 @@
 import m from 'mithril'
 import compilers from './compilers'
-import { isCss, ext, assign, createFlemsIoLink } from './utils'
+import { isCss, isJs, ext, assign, createFlemsIoLink } from './utils'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
 
@@ -244,7 +244,7 @@ export default function(model) {
   function consoleOutput(data) {
     const file = model.findFile(model.state, data.file)
 
-    if (file && tryBabel(data)) {
+    if (file && isJs(file.name) && tryBabel(data)) {
       file.compiler = 'babel'
       refresh()
       return
