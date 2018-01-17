@@ -11,7 +11,7 @@ export default (model, actions) =>
   m('.console' + b
       .bs('0 0 8px rgba(0,0,0,.2)')
       .position('relative')
-      .maxHeight(32)
+      .maxHeight(30)
       .zi(40)
       .d('flex')
       .transition('max-height 0.3s')
@@ -91,19 +91,19 @@ export default (model, actions) =>
                 )
               : log.content.map(p => m('span' + b.d('inline-block').mr(10), p))
           ),
-          log.stack && m('div' + b.ta('right').flexShrink(0).overflow('hidden'), {
-            style: b.maxHeight(!log.expand && log.type !== 'error' && 18).style
-          }, log.stack.map(s =>
-            m('div', [
-              (s.function || '') + ' at ',
-              m('a' + (s.file ? b.textDecoration('underline').cursor('pointer') : ''), {
-                onclick: e => {
-                  e.stopPropagation()
-                  s.select && actions.select(s.select, s)
-                }
-              }, (s.file || 0) + ':' + (s.line || 0) + ':' + (s.column || 0))
-            ])
-          ))
+          log.stack && m('div' + b.ta('right').flexShrink(0).overflow('hidden'),
+            log.stack.slice(0, !log.expand && log.type !== 'error' ? 1 : undefined).map(s =>
+              m('div', [
+                (s.function || '') + ' at ',
+                m('a' + (s.file ? b.textDecoration('underline').cursor('pointer') : ''), {
+                  onclick: e => {
+                    e.stopPropagation()
+                    s.select && actions.select(s.select, s)
+                  }
+                }, (s.file || 0) + ':' + (s.line || 0) + ':' + (s.column || 0))
+              ])
+            )
+          )
         ])
       )
     ),
