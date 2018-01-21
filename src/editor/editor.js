@@ -158,6 +158,8 @@ export default (model, actions) =>
 
         cm.setOption('lineWrapping', mode.lineWrapping || false)
 
+        cm.setOption('readOnly', (file.editable === undefined) ? false : !file.editable)
+
         if (!doc) {
           doc = CodeMirror.Doc(content, mode)
 
