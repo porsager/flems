@@ -156,9 +156,11 @@ export default (model, actions) =>
         const content = file.content || model.linkPatched[file.url] || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
+        const editable = (model.state.editable === false || file.editable === false) ? false : true
+
         cm.setOption('lineWrapping', mode.lineWrapping || false)
 
-        cm.setOption('readOnly', (file.editable === undefined) ? false : !file.editable)
+        cm.setOption('readOnly', !editable)
 
         if (!doc) {
           doc = CodeMirror.Doc(content, mode)

@@ -32,7 +32,7 @@ function linkTabs(model, actions) {
         target: '_blank',
         onclick: e => model.linkContent[link.url] && e.preventDefault()
       }, link.name),
-      m.trust(link.editable === false ? ' 🔒' : '')],
+      link.editable === false ? ' 🔒' : ''],
       () => model.linkContent[link.url] && actions.select(link.url),
       link === model.selectedFile(),
       model
