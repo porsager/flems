@@ -156,8 +156,8 @@ export default (model, actions) =>
         const content = file.content || model.linkPatched[file.url] || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
-        const editable = (model.state.editable === false || file.editable === false) ? false : true
-
+        const editable = model.state.editable && file.editable !== false
+        
         cm.setOption('lineWrapping', mode.lineWrapping || false)
 
         cm.setOption('readOnly', !editable)
