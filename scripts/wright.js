@@ -37,8 +37,7 @@ function roll(dev) {
       }),
       string({ include: 'src/**/*.svg' }),
       commonjs(),
-      nodeResolve(),
-      buble()
+      nodeResolve()
     ]
   })
   .then(bundle => {
