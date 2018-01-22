@@ -27,11 +27,12 @@ export default (model, actions) =>
 function linkTabs(model, actions) {
   return model.state.links.map(link =>
     tab(
-      m('a' + b.c('inherit'), {
+      [m('a' + b.c('inherit'), {
         href: link.url,
         target: '_blank',
         onclick: e => model.linkContent[link.url] && e.preventDefault()
       }, link.name),
+      link.editable === false ? ' 🔒' : ''],
       () => model.linkContent[link.url] && actions.select(link.url),
       link === model.selectedFile(),
       model
@@ -42,7 +43,7 @@ function linkTabs(model, actions) {
 function fileTabs(model, actions) {
   return model.state.files.map(file =>
     tab(
-      file.name,
+      file.name + (file.editable === false ? ' 🔒' : ''),
       () => actions.select(file.name),
       file === model.selectedFile(),
       model
