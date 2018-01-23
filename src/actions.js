@@ -69,8 +69,7 @@ export default function(model) {
 
     getLinks()
 
-    if (model.selected() !== state.selected)
-      model.selected(state.selected)
+    model.selected(state.selected || model.selected())
 
     refresh()
     m.redraw()
