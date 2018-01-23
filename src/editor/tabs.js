@@ -1,6 +1,9 @@
 import m from 'mithril'
 import b from 'bss'
 
+import icon from '../components/icon'
+import lockIcon from '../icons/lock.svg'
+
 export default (model, actions) =>
   m('nav'
     + b
@@ -27,12 +30,14 @@ export default (model, actions) =>
 function linkTabs(model, actions) {
   return model.state.links.map(link =>
     tab(
-      [m('a' + b.c('inherit'), {
-        href: link.url,
-        target: '_blank',
-        onclick: e => model.linkContent[link.url] && e.preventDefault()
-      }, link.name),
-      link.editable === false ? ' 🔒' : ''],
+      m('div' + b.d('flex'),
+        m('a' + b.c('inherit'), {
+          href: link.url,
+          target: '_blank',
+          onclick: e => model.linkContent[link.url] && e.preventDefault()
+        }, link.name),
+        !link.editable && icon({ size: 16, class: b.ml(6).class }, lockIcon)
+      ),
       () => model.linkContent[link.url] && actions.select(link.url),
       link === model.selectedFile(),
       model
@@ -43,7 +48,10 @@ function linkTabs(model, actions) {
 function fileTabs(model, actions) {
   return model.state.files.map(file =>
     tab(
-      file.name + (file.editable === false ? ' 🔒' : ''),
+      m('div' + b.d('flex'),
+        file.name,
+        !file.editable && icon({ size: 16, class: b.ml(6).class }, lockIcon)
+      ),
       () => actions.select(file.name),
       file === model.selectedFile(),
       model
