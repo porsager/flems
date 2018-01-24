@@ -1,4 +1,5 @@
 import m from 'mithril'
+import inspect from 'object-inspect'
 import compilers from './compilers'
 import { isCss, isJs, ext, assign, createFlemsIoLink } from './utils'
 import { diff, patch } from './dmp'
@@ -227,7 +228,8 @@ export default function(model) {
       }
     }).catch(err => {
       consoleOutput({
-        content: [String(err)],
+        content: ['Error compiling ' + file.compiler + ':', inspect(err)],
+        type: 'error',
         stack: []
       })
       return file
@@ -262,6 +264,9 @@ export default function(model) {
       s.line = result.line
       s.column = result.column
     })
+
+    if (data.content && !Array.isArray(data.content))
+      data.content = [data.content]
 
     model.console.output.push(data)
   }
