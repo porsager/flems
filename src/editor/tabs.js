@@ -36,7 +36,7 @@ function linkTabs(model, actions) {
           target: '_blank',
           onclick: e => model.linkContent[link.url] && e.preventDefault()
         }, link.name),
-        !link.editable && icon({ size: 16, class: b.ml(6).class }, lockIcon)
+        link.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
       () => model.linkContent[link.url] && actions.select(link.url),
       link === model.selectedFile(),
@@ -50,7 +50,7 @@ function fileTabs(model, actions) {
     tab(
       m('div' + b.d('flex'),
         file.name,
-        !file.editable && icon({ size: 16, class: b.ml(6).class }, lockIcon)
+        file.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
       () => actions.select(file.name),
       file === model.selectedFile(),
