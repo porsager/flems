@@ -4,7 +4,7 @@ b.setDebug(true)
 b.helper({
   rel: b.position('relative'),
   abs: b.position('absolute'),
-  resize: v => ({ resize: v })
+  resize: v => b({ resize: v })
 })
 
 b.css({
