@@ -39,11 +39,11 @@ const compilers = {
     })
   ),
   ls: file => load('https://rawgit.com/gkz/LiveScript/master/browser/livescript.js').then(() => {
-    if (!window.liveScript)
+    if (!window.livescript)
       window.livescript = window.require('livescript')
 
     const result = window.livescript.compile(file.content, {
-      map: 'notInCode',
+      map: 'linked',
       filename: file.name
     })
 
@@ -51,6 +51,25 @@ const compilers = {
       code: result.code,
       map: result.map.toString()
     }
+  }),
+  coffee: file => Promise.all([
+    load('https://unpkg.com/@babel/standalone/babel.min.js'),
+    load('http://coffeescript.org/v2/browser-compiler/coffeescript.js'),
+  ]).then(() => {
+    const coffee = window.CoffeeScript.compile(file.content, {
+      sourceMap: true,
+      filename: file.name
+    })
+
+    const data = window.Babel.transform(coffee.js, {
+      presets: ['es2015', 'stage-2', 'react'],
+      sourceMaps: true,
+      inputSourceMap: JSON.parse(coffee.v3SourceMap),
+      sourceFileName: file.name,
+      sourceMapTarget: file.name
+    })
+
+    return data
   })
 }
 

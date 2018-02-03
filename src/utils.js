@@ -40,9 +40,10 @@ export const ext = f => f.lastIndexOf('.') > -1 && f.slice(f.lastIndexOf('.') + 
 export const isJs = endsWith('.js')
 export const isTs = endsWith('.ts')
 export const isLs = endsWith('.ls')
+export const isCoffee = endsWith('.coffee')
 export const isCss = endsWith('.css')
 export const isHtml = endsWith('.html')
-export const isScript = f => isJs(f) || isTs(f) || isLs(f)
+export const isScript = f => isJs(f) || isTs(f) || isLs(f) || isCoffee(f)
 
 export const urlRegex = /^https?:\/\//
 export const filenameRegex = /^[\w-_.]*$/
