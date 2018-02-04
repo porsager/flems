@@ -38,7 +38,7 @@ const compilers = {
       sourceMapTarget: file.name
     })
   ),
-  ls: file => load('https://rawgit.com/gkz/LiveScript/master/browser/livescript.js').then(() => {
+  ls: file => load('https://cdn.rawgit.com/gkz/LiveScript/master/browser/livescript.js').then(() => {
     if (!window.livescript)
       window.livescript = window.require('livescript')
 
@@ -54,7 +54,7 @@ const compilers = {
   }),
   coffee: file => Promise.all([
     load('https://unpkg.com/@babel/standalone/babel.min.js'),
-    load('http://coffeescript.org/v2/browser-compiler/coffeescript.js'),
+    load('https://cdn.rawgit.com/jashkenas/coffeescript/master/docs/v2/browser-compiler/coffeescript.js')
   ]).then(() => {
     const coffee = window.CoffeeScript.compile(file.content, {
       sourceMap: true,
