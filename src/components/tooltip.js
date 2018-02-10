@@ -1,18 +1,9 @@
 import m from 'mithril'
 import b from 'bss'
 
-function closest(el, className) {
-  while (!el.classList.contains(className))
-    el = el.parentElement
-
-  return el
-}
-
 const setTriangle = ({ dom }) => {
-  const container = closest(dom, 'flems').getBoundingClientRect()
-      , parent = dom.parentNode.getBoundingClientRect()
-
-  if (parent.top - container.top < 40) {
+  const rect = dom.parentNode.getBoundingClientRect()
+  if (rect.top < 40) {
     dom.style.bottom = 0
     dom.style.borderBottom = '5px solid white'
   } else {
@@ -21,21 +12,21 @@ const setTriangle = ({ dom }) => {
   }
 }
 
-const position = dom => {
-  const container = closest(dom, 'flems').getBoundingClientRect()
-      , parent = dom.parentNode.getBoundingClientRect()
+const position = ({ dom }) => {
+  const rect = dom.parentNode.getBoundingClientRect()
 
   const left = Math.min(
     -dom.clientWidth / 2 + dom.parentNode.clientWidth / 2,
-    -dom.clientWidth + parent.width + (container.width - (parent.right - container.left) - 2)
+    -dom.clientWidth + rect.width + (window.innerWidth - rect.right - 2)
   )
+
   dom.style.left = left + 'px'
 
-  if (parent.top - container.top < 40) {
-    dom.style.transformOrigin = Math.abs(left) + parent.width / 2 + 'px 0px'
+  if (rect.top < 40) {
+    dom.style.transformOrigin = Math.abs(left) + rect.width / 2 + 'px 0px'
     dom.style.bottom = '-26px'
   } else {
-    dom.style.transformOrigin = Math.abs(left) + parent.width / 2 + 'px 26px'
+    dom.style.transformOrigin = Math.abs(left) + rect.width / 2 + 'px 26px'
     dom.style.top = '-26px'
   }
 }
@@ -46,24 +37,25 @@ const oncreate = ({ dom }) => {
       b.o(1).transform('scale(1)')
     ).class
   )
-  position(dom)
+  position({ dom })
 }
 
-export default title => [
+export default ({
+  zIndex = 11,
+  title = ''
+}) => [
   m('.tooltip'
    + b
     .position('absolute')
     .o(0)
     .c('gray')
     .transform('scale(0)')
-    .zi(1)
     .w('auto')
     .h(26)
-    .fs(12)
+    .fontSize(12)
     .br(2)
     .p('5px 8px')
     .bc('white')
-    .c('#555')
     .bs('0 2px 8px rgba(0,0,0,0.35)')
     .transition('opacity 0.3s, transform 0.3s')
     .pointerEvents('none')
@@ -82,7 +74,6 @@ export default title => [
    + b
     .pointerEvents('none')
     .o(0)
-    .zi(1)
     .transform('scale(0)')
     .position('absolute')
     .transformOrigin('bottom center')

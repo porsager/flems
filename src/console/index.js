@@ -44,7 +44,9 @@ export default (model, actions) =>
             .transition('max-height 0.3s')
             .class
         }, arrowIcon),
-        tooltip(model.state.console === true ? 'Hide console' : 'Show console')
+        tooltip({
+          title: model.state.console === true ? 'Hide console' : 'Show console'
+        })
       )
     ),
     m('.scroll'

@@ -41,5 +41,5 @@ export default (iconName, attrs = {}) =>
         attrs.badge
     )
   ,
-    tooltip(attrs.title)
+    tooltip({ title: attrs.title })
   )
