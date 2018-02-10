@@ -101,8 +101,8 @@ export default (model, actions) =>
         extraKeys: {
           'Alt-F': 'findPersistent',
           'Shift-Tab': 'indentLess',
-          'Cmd-L': (cm, e) => { e.codemirrorIgnore = true },
-          'Ctrl-L': (cm, e) => { e.codemirrorIgnore = true },
+          'Cmd-L': false,
+          'Ctrl-L': false,
           Enter: cm => {
             const cursor = cm.getCursor()
                 , line = cm.getRange({ line: cursor.line, ch: 0 }, cursor).trim()
@@ -157,7 +157,7 @@ export default (model, actions) =>
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
         const editable = model.state.editable && file.editable !== false
-        
+
         cm.setOption('lineWrapping', mode.lineWrapping || false)
 
         cm.setOption('readOnly', !editable)
