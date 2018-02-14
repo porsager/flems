@@ -81,22 +81,13 @@ function init(data) {
     .prototype
     .slice
     .call(document.getElementsByTagName('script'))
-
-  const load = scripts.filter(s => !s.src).map(s => ({
-    name: '.html',
-    content: s.textContent,
-    el: s
-  }))
-    .concat(
-      state.files.filter(f => isScript(f.name))
-    )
-
-  const loadRemote = state
-    .links
-    .filter(l => l.type === 'js')
-    .concat(scripts.filter(s => s.src).map(s =>
-      ({ url: s.src, type: 'js', el: s })
-    ))
+    .map(s => ({
+      url: s.src,
+      name: '.html',
+      type: 'js',
+      content: s.textContent,
+      el: s
+    }))
 
   state
     .links
@@ -109,16 +100,21 @@ function init(data) {
     .forEach(loadStyle)
 
   Promise
-    .all(loadRemote.map(loadRemoteScript))
-    .then(loaded => {
-      const errors = loaded.filter(l => l)
-
-      if (errors.length > 0) {
-        consoleOutput('Error loading:\n\t' + errors.join('\n\t'), 'error', { stack: '' })
-      } else {
-        send('loaded')
-        load.forEach(flemsLoadScript)
-      }
+    .all(
+      state.links
+      .filter(l => l.type === 'js')
+      .map(loadRemoteScript)
+      .concat(scripts.map(s => s.url
+        ? loadRemoteScript(s)
+        : flemsLoadScript(s)
+      ))
+    )
+    .then(() => {
+      send('loaded')
+      state.files.filter(f => isScript(f.name)).forEach(flemsLoadScript)
+    })
+    .catch(err => {
+      consoleOutput('Error loading:\n\t' + err.join('\n\t'), 'error', { stack: '' })
     })
 }
 
@@ -195,7 +191,7 @@ function loadRemoteScript(script) {
     const el = create('script', {
       charset: 'utf-8',
       onload: () => resolve(),
-      onerror: err => resolve([script.url, err]),
+      onerror: err => reject([script.url, err]),
       async: script.el && script.el.async,
       defer: script.el && script.el.defer,
       src: script.url
