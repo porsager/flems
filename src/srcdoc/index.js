@@ -146,7 +146,7 @@ function consoleOutput(content, type, err, slice = 0) {
   })
   send('console', {
     file: err.currentScript,
-    content: (Array.isArray(content) ? content : [content]).map(s => String(s)),
+    content: (Array.isArray(content) ? content : [content]).map(s => s === '' ? '\'\'' : String(s)),
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
     type: type,
     date: new Date()
