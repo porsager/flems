@@ -196,12 +196,16 @@ function loadRemoteScript(script) {
     }
     const el = create('script', {
       charset: 'utf-8',
-      onload: () => resolve(),
-      onerror: err => reject([script.url, err]),
-      async: script.el && script.el.async,
-      defer: script.el && script.el.defer,
+      async: false,
+      defer: false,
       src: script.url
     })
+
+    if (script.el)
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
+
+    el.onload = () => resolve()
+    el.onerror = err => reject([script.url, err])
 
     script.el
       ? script.el.parentNode.replaceChild(el, script.el)
@@ -210,16 +214,19 @@ function loadRemoteScript(script) {
 }
 
 function flemsLoadScript(script) {
-  const url = URL.createObjectURL(new Blob([script.content], { type : 'application/js' }))
+  const url = URL.createObjectURL(new Blob([script.content], { type : 'application/javascript' }))
   blobUrls[url] = script
   const el = create('script', {
     src: url,
     charset: 'utf-8',
     async: false,
-    defer: false,
-    onerror: err => consoleOutput(String(err), 'error', err)
+    defer: false
   })
 
+  if (script.el)
+    Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
+
+  el.onerror = err => consoleOutput(String(err), 'error', err)
   currentScript = script
 
   script.el
