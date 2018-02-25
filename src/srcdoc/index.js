@@ -8,8 +8,14 @@ let currentScript = {}
 const parent = window.parent
 const blobUrls = {}
 
-delete window.parent
-delete window.frameElement
+try {
+  window.parent = null
+  window.frameElement = null
+  delete window.parent
+  delete window.frameElement
+} catch (e) {
+  // noop
+}
 
 document.write = function(html) {
   document.body.innerHTML += html
