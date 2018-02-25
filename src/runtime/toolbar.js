@@ -19,7 +19,7 @@ export default (model, actions) =>
     .d('flex')
     .c('gray')
     .background('rgb(246,246,246)')
-    .boxShadow('0 1px 0 rgb(183, 183, 183)')
+    .boxShadow('0 1px 1px rgba(0,0,0,0.35)')
   ,
     toolbarButton(model.state.autoReload ? pauseIcon : playIcon, {
       title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',

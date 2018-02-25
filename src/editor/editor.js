@@ -73,6 +73,7 @@ export default (model, actions) =>
       .cursor('text')
       .w('100%').h('100%')
       .fontSize(14)
+      .boxShadow('inset 0 1px 1px rgba(0,0,0,.35)')
     )
     .$nest('.cm-s-material.CodeMirror, .cm-s-material div.CodeMirror-gutters',
       b.backgroundColor(model.state.color)

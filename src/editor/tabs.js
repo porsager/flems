@@ -63,12 +63,11 @@ function tab(title, onclick, selected, model) {
   return m('.tab'
    + b.d('flex')
     .ai('center')
-    .transition('background 0.3s, color 0.3s')
+    .transition('background .3s, color .3s')
     .minWidth(40)
     .maxWidth(200)
     .cursor('pointer')
     .flexShrink(2)
-    .background('rgb(246,246,246)')
     .$hover(
       b
       .flexShrink(0)
@@ -79,6 +78,8 @@ function tab(title, onclick, selected, model) {
     style: selected
       ? b
       .background(model.state.color)
+      .h(40)
+      .zi(1)
       .c('white')
       .flexShrink(0)
       .style
