@@ -34,9 +34,9 @@
     "rollup-plugin-node-resolve": "3.0.3",
     "rollup-plugin-progress": "0.4.0",
     "rollup-plugin-replace": "2.0.0",
-    "rollup-plugin-string": "2.0.2",
     "rollup-plugin-uglify": "3.0.0",
     "source-map": "0.6.1",
+    "svgo": "1.0.5",
     "wright": "1.0.1"
   }
 }

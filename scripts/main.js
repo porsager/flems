@@ -7,9 +7,9 @@ const rollup = require('rollup')
     , uglify = require('rollup-plugin-uglify')
     , filesize = require('rollup-plugin-filesize')
     , replace = require('rollup-plugin-replace')
-    , string = require('rollup-plugin-string')
     , codemirrorCss = require('./codemirrorcss')
     , pkg = require('../package.json')
+    , svg = require('./svg')
 
 // UMD
 rollup.rollup({
@@ -21,7 +21,7 @@ rollup.rollup({
       'b.setDebug(true)': '',
       codemirrorStyles: JSON.stringify(codemirrorCss)
     }),
-    string({ include: 'src/**/*.svg' }),
+    svg(),
     commonjs(),
     nodeResolve(),
     buble(),
