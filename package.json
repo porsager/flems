@@ -1,6 +1,6 @@
 {
   "name": "flems",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "A standalone web playground / sandbox",
   "browser": "dist/flems.html",
   "main": "src/index.js",
@@ -19,6 +19,7 @@
     "iframe"
   ],
   "author": "Rasmus Porsager <rasmus@porsager.com>",
+  "repository": "porsager/flems",
   "license": "WTFPL",
   "devDependencies": {
     "bss": "1.1.3",
