@@ -34,8 +34,7 @@ const compilers = {
     window.Babel.transform(file.content, {
       presets: ['es2015', 'stage-2', 'react'],
       sourceMaps: true,
-      sourceFileName: file.name,
-      sourceMapTarget: file.name
+      sourceFileName: file.name
     })
   ),
   ls: file => load('https://cdn.rawgit.com/gkz/LiveScript/master/browser/livescript.js').then(() => {
