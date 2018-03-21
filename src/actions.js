@@ -194,7 +194,7 @@ export default function(model) {
         content: {
           id: model.id,
           state: {
-            files: files,
+            files: files.map(({ name, content }) => ({ name, content })),
             links: model.state.links.map(link => ({
               type: link.type || (isCss(link.name) ? 'css' : 'js'),
               name: link.name,

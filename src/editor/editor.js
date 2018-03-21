@@ -83,8 +83,7 @@ export default (model, actions) =>
     )
   , {
     oncreate: ({ dom }) => {
-      const docs = {}
-          , blockStart = /[\{\(\[]$/
+      const blockStart = /[\{\(\[]$/
           , onlyBlocks = /[^\{\}\[\]\(\)]/g
 
       const cm = CodeMirror(dom, {
@@ -116,7 +115,7 @@ export default (model, actions) =>
             cm.execCommand('newlineAndIndent')
             cm.setOption('smartIndent', true)
 
-            if (fat || block)
+            if (fat || block)
               cm.execCommand('insertSoftTab')
           },
           Tab: cm => {
@@ -152,8 +151,6 @@ export default (model, actions) =>
         if (!file)
           return
 
-        let doc = docs[file.url || file.name]
-
         const content = file.content || model.linkPatched[file.url] || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
@@ -163,22 +160,17 @@ export default (model, actions) =>
 
         cm.setOption('readOnly', !editable)
 
-        if (!doc) {
-          doc = CodeMirror.Doc(content, mode)
-
-          doc.on('change', e =>
-            actions.fileChange(file, doc.getValue())
-          )
-
-          docs[file.url || file.name] = doc
+        if (!file.doc) {
+          file.doc = CodeMirror.Doc(content, mode)
+          file.doc.on('change', e => actions.fileChange(file, file.doc.getValue()))
         }
 
-        if (content !== doc.getValue())
-          doc.setValue(content)
+        if (content !== file.doc.getValue())
+          file.doc.setValue(content)
 
         const focusAfter = cm.getDoc() !== initialDoc || model.state.autoFocus
 
-        cm.swapDoc(doc)
+        cm.swapDoc(file.doc)
 
         if (focusAfter)
           cm.focus()
