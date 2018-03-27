@@ -154,6 +154,8 @@ export default (model, actions) =>
         const content = file.content || file.patched || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
+        let selections
+
         const editable = model.state.editable && file.editable !== false
 
         cm.setOption('lineWrapping', mode.lineWrapping || false)
@@ -163,6 +165,31 @@ export default (model, actions) =>
         if (!file.doc) {
           file.doc = CodeMirror.Doc(content, mode)
           file.doc.on('change', e => actions.fileChange(file, file.doc.getValue()))
+          file.doc.on('cursorActivity', () => {
+            actions.fileSelectionChange(
+              file,
+              file.doc.listSelections().map(s =>
+                s.anchor.line + ':' + s.anchor.ch +
+                (
+                  s.head && (s.anchor.line !== s.head.line || s.anchor.ch !== s.head.ch)
+                    ? '-' + s.head.line + ':' + s.head.ch
+                    : ''
+                )
+              ).join(',')
+            )
+          })
+
+          if (file.selections) {
+            selections = file.selections.split(',').map(s => (
+              s = s.split('-').map(c =>
+                (c = c.split(':'), { line: parseInt(c[0]) || 0, ch: parseInt(c[1]) || 0 })
+              ),
+              {
+                anchor: s[0],
+                head: s[1] || s[0]
+              })
+            )
+          }
         }
 
         if (content !== file.doc.getValue())
@@ -171,6 +198,13 @@ export default (model, actions) =>
         const focusAfter = cm.getDoc() !== initialDoc || model.state.autoFocus
 
         cm.swapDoc(file.doc)
+
+        if (selections && selections.length) {
+          setTimeout(() => {
+            file.doc.setSelections(selections)
+            cm.scrollIntoView(selections[0].head, 500)
+          }, 0)
+        }
 
         if (focusAfter)
           cm.focus()

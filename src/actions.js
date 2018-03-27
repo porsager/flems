@@ -18,6 +18,7 @@ export default function(model) {
     toggleConsole : change(hide => model.state.console = model.state.console === true ? 'collapsed' : true),
     resetSize     : change(() => actions.setMiddle(50)),
     loaded        : () => model.loading = false,
+    fileSelectionChange,
     toggleAutoReload,
     onConsoleKeyDown,
     onConsoleInput,
@@ -282,6 +283,11 @@ export default function(model) {
       }
       m.redraw()
     }, 400)
+  }
+
+  function fileSelectionChange(file, selections) {
+    file.selections = selections === '0:0' ? undefined : selections
+    changed()
   }
 
   function changeMiddle(e) {
