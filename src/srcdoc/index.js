@@ -1,6 +1,6 @@
 import inspect from 'object-inspect'
 import 'mithril/promise/promise'
-import { isScript, isHtml, isCss } from '../utils'
+import { endsWith } from '../utils'
 
 let id = window.name
 let currentScript = {}
@@ -75,7 +75,7 @@ function init(data) {
   id = data.id
 
   const state = data.state
-  const body = state.files.filter(f => isHtml(f.name))[0]
+  const body = state.files.filter(f => endsWith('.html', f.name))[0]
   const title = document.title
 
   document.documentElement.innerHTML = body ? body.content : ''
@@ -101,7 +101,7 @@ function init(data) {
     .forEach(loadRemoteStyle)
 
   state.files
-    .filter(f => isCss(f.name))
+    .filter(f => f.type === 'style')
     .concat(state.links.filter(l => l.type === 'css' && l.content))
     .forEach(loadStyle)
 
@@ -117,7 +117,7 @@ function init(data) {
     )
     .then(() => {
       send('loaded')
-      state.files.filter(f => isScript(f.name)).forEach(flemsLoadScript)
+      state.files.filter(f => f.type === 'script').forEach(flemsLoadScript)
     })
     .catch(err => {
       consoleOutput('Error loading:\n\t' + err.join('\n\t'), 'error', { stack: '' })

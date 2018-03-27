@@ -3,7 +3,8 @@ import m from 'mithril'
 
 import app from './app'
 
-import Model, { defaults } from './model'
+import Model from './model'
+import { defaults } from './state'
 import Actions from './actions'
 import message from './message'
 

@@ -34,11 +34,11 @@ function linkTabs(model, actions) {
         m('a' + b.c('inherit'), {
           href: link.url,
           target: '_blank',
-          onclick: e => model.linkContent[link.url] && e.preventDefault()
+          onclick: e => link.content && e.preventDefault()
         }, link.name),
         link.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
-      () => model.linkContent[link.url] && actions.select(link.url),
+      () => link.content && actions.select(link.url),
       link === model.selectedFile(),
       model
     )

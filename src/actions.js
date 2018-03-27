@@ -1,7 +1,8 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { isCss, isJs, ext, assign, createFlemsIoLink } from './utils'
+import { assign, createFlemsIoLink } from './utils'
+import { sanitize } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
 
@@ -56,22 +57,7 @@ export default function(model) {
   }
 
   function setState(state) {
-    assign(model.state, state)
-
-    model.linkContent = model.state.links.reduce((acc, link) => {
-      acc[link.url] = model.linkContent[link.url]
-      return acc
-    }, {})
-
-    model.linkPatched = model.state.links.reduce((acc, link) => {
-      acc[link.url] = model.linkPatched[link.url]
-      return acc
-    }, {})
-
-    getLinks()
-
-    model.selected(state.selected || model.selected())
-
+    model.state = sanitize(state)
     refresh()
     m.redraw()
   }
@@ -151,10 +137,8 @@ export default function(model) {
   }
 
   function getLink(link) {
-    if (model.linkContent[link.url])
+    if (link.content)
       return
-
-    model.linkContent[link.url] = undefined
 
     return m.request(link.url, {
       deserialize: v => v
@@ -163,8 +147,9 @@ export default function(model) {
       if (content.length > 200000) // Too large files are slow
         return
 
-      model.linkContent[link.url] = content
-      model.linkPatched[link.url] = link.patches
+      link.content = content
+
+      link.patched = link.patches
         ? patch(content, link.patches)[0]
         : content
 
@@ -194,12 +179,12 @@ export default function(model) {
         content: {
           id: model.id,
           state: {
-            files: files.map(({ name, content }) => ({ name, content })),
+            files: files.map(({ name, type, content }) => ({ name, type, content })),
             links: model.state.links.map(link => ({
-              type: link.type || (isCss(link.name) ? 'css' : 'js'),
+              type: link.type,
               name: link.name,
               url : link.url,
-              content: model.linkPatched[link.url]
+              content: link.patched || link.content
             }))
           }
         }
@@ -208,24 +193,23 @@ export default function(model) {
   }
 
   function getContent(file) {
-    const compile = typeof file.compiler === 'function'
+    if (!file.compiler)
+      return file
+
+    const compile = file.compiler === 'function'
       ? file.compiler
       : compilers[file.compiler || ext(file.name)]
-
-    if (!compile)
-      return file
 
     return compile(file).then(result => {
       if (result.error)
         consoleOutput(result.error)
 
       if (result.map)
-        model.sourceMaps[file.name] = result.map
+        file.map = result.map
 
-      return {
-        name: file.name,
+      return assign(file, {
         content: result.code || ''
-      }
+      })
     }).catch(err => {
       consoleOutput({
         content: ['Error compiling ' + file.compiler + ':', inspect(err)],
@@ -245,7 +229,7 @@ export default function(model) {
   function consoleOutput(data) {
     const file = model.findFile(model.state, data.file)
 
-    if (file && isJs(file.name) && tryBabel(data)) {
+    if (file && file.type === 'script' && tryBabel(data)) {
       file.compiler = 'babel'
       refresh()
       return
@@ -253,10 +237,10 @@ export default function(model) {
 
     data.stack.forEach(s => {
       const file = model.findFile(model.state, s.file)
-      if (!file || !(file.name in model.sourceMaps))
+      if (!file || !file.map)
         return
 
-      const smc = new SourceMap.SourceMapConsumer(model.sourceMaps[file.name])
+      const smc = new SourceMap.SourceMapConsumer(file.map)
       const result = smc.originalPositionFor({
         line: s.line,
         column: s.column
@@ -275,22 +259,22 @@ export default function(model) {
     clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
       if (file.url)
-        model.linkPatched[file.url] = content
+        file.patched = content
       else
         file.content = content
 
       if (file.url)
-        file.patches = diff(model.linkContent[file.url], model.linkPatched[file.url])
+        file.patches = diff(file.content, file.patched)
 
       changed()
 
-      if (model.state.autoReload && (file.type === 'css' || isCss(file.name))) {
+      if (model.state.autoReload && (file.type === 'css')) {
         model.iframe.contentWindow.postMessage({
           name: 'css',
           content: {
             name: file.name,
             url: file.url,
-            content: model.linkPatched[file.url] || file.content
+            content: file.patched || file.content
           }
         }, '*')
       } else {

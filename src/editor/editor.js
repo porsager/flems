@@ -151,7 +151,7 @@ export default (model, actions) =>
         if (!file)
           return
 
-        const content = file.content || model.linkPatched[file.url] || ''
+        const content = file.content || file.patched || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
         const editable = model.state.editable && file.editable !== false
