@@ -35,7 +35,7 @@ monkeys.forEach(monkey => {
 
 window.p = patch(null, 'print', true)
 
-window.onerror = function(msg, file, line, col, err) {
+window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   err = (!err || typeof err === 'string') ? { message: msg || err } : err
 
   err.stack = (!err.stack || String(err) === err.stack)
@@ -45,6 +45,10 @@ window.onerror = function(msg, file, line, col, err) {
   err.currentScript = currentScript.name
   consoleOutput(err.message || String(err), 'error', err)
 }
+
+window.addEventListener('unhandledrejection', (e) =>
+  window.p('Unhandled rejection:', e.reason)
+)
 
 window.addEventListener('resize', () => send('resize'))
 window.addEventListener('message', ({ data }) => {
