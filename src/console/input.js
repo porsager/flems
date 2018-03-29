@@ -1,15 +1,18 @@
 import m from 'mithril'
 import b from 'bss'
+import { wait } from '../utils'
 
 export default (model, actions) =>
   m('.input'
     + b
       .d('flex')
       .p(2, 0)
-      .flexShrink(1)
+      .flexShrink(0)
       .w('100%')
       .ff('Source Code Pro, monospace')
-  ,
+  , {
+    onbeforeremove: wait(300)
+  },
     m('label'
       + b
         .d('flex')

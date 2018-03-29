@@ -16,6 +16,8 @@ export function endsWith(suffix, str) {
   return str.indexOf(suffix, str.length - suffix.length) > -1
 }
 
+export const wait = ms => () => new Promise(res => setTimeout(res, ms))
+
 export function assign(obj, obj2 = {}) {
   const newObj = {}
   Object.keys(obj).concat(Object.keys(obj2)).forEach(key =>

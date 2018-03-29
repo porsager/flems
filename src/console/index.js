@@ -2,6 +2,7 @@ import m from 'mithril'
 import b from 'bss'
 
 import input from './input'
+import { wait } from '../utils'
 
 import icon from '../components/icon'
 import tooltip from '../components/tooltip'
@@ -49,7 +50,7 @@ export default (model, actions) =>
         })
       )
     ),
-    m('.scroll'
+    model.state.console === true && m('.scroll'
       + b.overflow('auto')
     , {
       onscroll: (e) => {
@@ -62,26 +63,34 @@ export default (model, actions) =>
         model.console.manualScroll =
           e.target.scrollTop !== e.target.scrollHeight - e.target.offsetHeight
       },
+      onbeforeremove: wait(300),
+      oncreate: ({ dom }) => {
+        dom.lastChild && dom.lastChild.scrollIntoView(false)
+      },
       onupdate: ({ state, dom }) => {
         if (model.console.manualScroll)
           return
 
         model.ignoreScroll = true
-        dom.lastChild && dom.lastChild.scrollIntoView(false)
+        clearTimeout(state.timeout)
+        state.timeout = setTimeout(() =>
+          dom.lastChild && dom.lastChild.scrollIntoView(false)
+        , 50)
       }
     },
       model.console.output.slice(-200).map(log =>
-        m('div' +
-          b.d('flex')
+        m('.logLine' + b.d('flex')
           .ff('Source Code Pro, monospace')
           .alignItems('center')
           .p(2, 10)
           .minHeight(22)
-          .fs(12).borderBottom('1px solid #eee')
+          .fs(12)
+          .borderBottom('1px solid #eee')
           .c('#555')
           .whiteSpace('pre-wrap')
           .alignItems('center')
         , {
+          key: log.number,
           onclick: () => log.expand = !log.expand,
           title: log.date
         }, [
@@ -93,9 +102,12 @@ export default (model, actions) =>
                 )
               : log.content.map(p => m('span' + b.d('inline-block').mr(10), p))
           ),
-          log.stack && m('div' + b.ta('right').flexShrink(0).overflow('hidden'),
+          log.stack && m('.stack' + b
+              .ta('right')
+              .flexShrink(0)
+              .overflow('hidden'),
             log.stack.slice(0, !log.expand && log.type !== 'error' ? 1 : undefined).map(s =>
-              m('div', [
+              m('div',
                 (s.function || '') + ' at ',
                 m('a' + (s.file ? b.textDecoration('underline').cursor('pointer') : ''), {
                   onclick: e => {
@@ -103,13 +115,13 @@ export default (model, actions) =>
                     s.select && actions.select(s.select, s)
                   }
                 }, (s.file || 0) + ':' + (s.line || 0) + ':' + (s.column || 0))
-              ])
+              )
             )
           )
         ])
       )
     ),
-    input(model, actions)
+    model.state.console === true && input(model, actions)
   )
 
 function bubble(background, count) {

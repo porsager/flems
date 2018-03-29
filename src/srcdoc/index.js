@@ -4,6 +4,7 @@ import { endsWith } from '../utils'
 
 let id = window.name
 let currentScript = {}
+let consoleCount = 0
 
 const parent = window.parent
 const blobUrls = {}
@@ -151,6 +152,7 @@ function consoleOutput(content, type, err, slice = 0) {
       cutoff = i
   })
   send('console', {
+    number: consoleCount++,
     file: err.currentScript,
     content: (Array.isArray(content) ? content : [content]).map(s => s === '' ? '\'\'' : String(s)),
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
