@@ -8,6 +8,7 @@ let consoleCount = 0
 
 const parent = window.parent
 const blobUrls = {}
+const moduleExports = {}
 
 try {
   window.parent = null
@@ -219,14 +220,36 @@ function loadRemoteScript(script) {
   })
 }
 
+const isModuleRegex = /(^\s*|[});\n]\s*)(import\s*(['"]|(\*\s+as\s+)?(?!type)([^"'()\n; ]+)\s*from\s*['"]|\{)|export\s+\*\s+from\s+["']|export\s*(\{|default|function|class|var|const|let|async\s+function))/
+    , staticImportRegex = new RegExp(' from [\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]')
+    , dynamicImportRegex = new RegExp('import\\([\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]\\)', 'g')
+
 function flemsLoadScript(script) {
-  const url = URL.createObjectURL(new Blob([script.content], { type : 'application/javascript' }))
+  const isModule = isModuleRegex.test(script.content) ? 'module' : undefined
+
+  const content = isModule
+    ? Object.keys(moduleExports).reduce((acc, m) =>
+      acc
+        .replace(new RegExp(` from ['"]./${m}['"]`, 'i'), ' from "' + moduleExports[m] + '"')
+        .replace(new RegExp(`import\\(['"]./${m}['"]\\)`, 'ig'), 'import("' + moduleExports[m] + '")')
+    , script.content
+      .replace(staticImportRegex, ' from "https://unpkg.com/$1?module"')
+      .replace(dynamicImportRegex, 'import("https://unpkg.com/$1?module")')
+    )
+    : script.content
+
+  const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
+
   blobUrls[url] = script
+  if (isModule)
+    moduleExports[script.name] = moduleExports[script.name.substring(0, script.name.lastIndexOf('.'))] = url
+
   const el = create('script', {
     src: url,
     charset: 'utf-8',
     async: false,
-    defer: false
+    defer: false,
+    type: isModule ? 'module' : ''
   })
 
   if (script.el)

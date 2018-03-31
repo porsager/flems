@@ -46,6 +46,7 @@ const compilers = {
     const result = window.ts.transpileModule(file.content, {
       fileName: file.name,
       compilerOptions: {
+        module: 'ESNext',
         sourceMap: true,
         jsx: 'react'
       }
@@ -58,8 +59,9 @@ const compilers = {
   }),
   babel: file => load('https://unpkg.com/@babel/standalone@7.0.0-beta.42/babel.min.js').then(() =>
     window.Babel.transform(file.content, {
-      presets: ['es2015', 'stage-2', 'react'],
+      presets: [['es2015', { modules: false }], 'stage-2', 'react'],
       sourceMaps: true,
+      sourceType: 'unambiguous',
       sourceFileName: file.name
     })
   ),
@@ -87,7 +89,7 @@ const compilers = {
     })
 
     const data = window.Babel.transform(coffee.js, {
-      presets: ['es2015', 'stage-2', 'react'],
+      presets: [['es2015', { modules: false }], 'stage-2', 'react'],
       sourceMaps: true,
       inputSourceMap: JSON.parse(coffee.v3SourceMap),
       sourceFileName: file.name
