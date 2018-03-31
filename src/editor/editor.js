@@ -151,7 +151,7 @@ export default (model, actions) =>
         if (!file)
           return
 
-        const content = file.content || file.patched || ''
+        const content = file.patched || file.content || ''
             , mode = modes[file.name.split('.').pop()] || 'javascript'
 
         let selections
