@@ -36,6 +36,18 @@ function linkTabs(model, actions) {
           target: '_blank',
           onclick: e => link.content && e.preventDefault()
         }, link.name),
+        link.patches && m('span' + b.$animate('0.3s', {
+          from: b.maxWidth(0).o(0),
+          to: b.maxWidth(120).o(1)
+        }).fontStyle('italic').ml(2).mt(2).fs(12), {
+          onbeforeremove: ({ dom }) => {
+            dom.style.animation = b.$animate('0.3s', {
+              from: b.maxWidth(120).o(1),
+              to: b.maxWidth(0).o(0)
+            }).style.animation
+            return new Promise(res => setTimeout(res, 300))
+          }
+        }, '(modified)'),
         link.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
       () => link.content && actions.select(link.url),
