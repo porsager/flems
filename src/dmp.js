@@ -1582,12 +1582,14 @@ function patchObj() {
 }
 
 function serialize(diff) {
-  return diff.map(d => d.diffs.concat([
-    d.length1,
-    d.length2,
-    d.start1,
-    d.start2
-  ]))
+  return diff.length
+    ? diff.map(d => d.diffs.concat([
+      d.length1,
+      d.length2,
+      d.start1,
+      d.start2
+    ]))
+    : undefined
 }
 
 function deserialize(diff) {

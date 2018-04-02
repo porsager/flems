@@ -267,9 +267,6 @@ export default function(model) {
       if (file.url)
         file.patches = diff(file.content, file.patched)
 
-      if (file.patches.length === 0)
-        file.patches = undefined
-
       changed()
 
       if (model.state.autoReload && (file.type === 'css')) {
