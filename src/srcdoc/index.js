@@ -220,7 +220,7 @@ function loadRemoteScript(script) {
   })
 }
 
-const isModuleRegex = /(^\s*|[});\n]\s*)(import\s*(['"]|(\*\s+as\s+)?(?!type)([^"'()\n; ]+)\s*from\s*['"]|\{)|export\s+\*\s+from\s+["']|export\s*(\{|default|function|class|var|const|let|async\s+function))/
+const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
     , staticImportRegex = new RegExp(' from [\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]')
     , dynamicImportRegex = new RegExp('import\\([\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]\\)', 'g')
 
