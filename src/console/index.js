@@ -65,17 +65,14 @@ export default (model, actions) =>
       },
       onbeforeremove: wait(300),
       oncreate: ({ dom }) => {
-        dom.lastChild && dom.lastChild.scrollIntoView(false)
+        dom.scrollTop = dom.scrollHeight - dom.clientHeight
       },
       onupdate: ({ state, dom }) => {
         if (model.console.manualScroll)
           return
 
         model.ignoreScroll = true
-        clearTimeout(state.timeout)
-        state.timeout = setTimeout(() =>
-          dom.lastChild && dom.lastChild.scrollIntoView(false)
-        , 50)
+        dom.scrollTop = dom.scrollHeight - dom.clientHeight
       }
     },
       model.console.output.slice(-200).map(log =>
