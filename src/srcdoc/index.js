@@ -221,7 +221,7 @@ function loadRemoteScript(script) {
 }
 
 const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , staticImportRegex = new RegExp(' from [\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]')
+    , staticImportRegex = new RegExp(' from [\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]', 'g')
     , dynamicImportRegex = new RegExp('import\\([\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]\\)', 'g')
 
 function flemsLoadScript(script) {
