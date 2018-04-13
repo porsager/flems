@@ -1,8 +1,8 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { assign, createFlemsIoLink } from './utils'
-import { sanitize } from './state'
+import { assign } from './utils'
+import { sanitize, createFlemsIoLink } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
 

@@ -1,5 +1,3 @@
-import lz from 'lz-string'
-
 export const ext = f => f.lastIndexOf('.') > -1 && f.slice(f.lastIndexOf('.') + 1)
 
 export const urlRegex = /^https?:\/\//
@@ -24,12 +22,6 @@ export function assign(obj, obj2 = {}) {
     newObj[key] = Object.prototype.hasOwnProperty.call(obj2, key) ? obj2[key] : obj[key]
   )
   return newObj
-}
-
-export const createFlemsIoLink = state => {
-  return 'https://flems.io/#0=' + lz.compressToEncodedURIComponent(
-    JSON.stringify(state)
-  )
 }
 
 export function find(fn, array) {
