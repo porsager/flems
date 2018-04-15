@@ -1,7 +1,7 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { assign } from './utils'
+import { assign, ext } from './utils'
 import { sanitize, createFlemsIoLink } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
@@ -185,7 +185,7 @@ export default function(model) {
               type: link.type,
               name: link.name,
               url : link.url,
-              content: link.patched || link.content
+              content: link.patched || link.content
             }))
           }
         }
@@ -269,7 +269,7 @@ export default function(model) {
 
       changed()
 
-      if (model.state.autoReload && (file.type === 'css')) {
+      if (model.state.autoReload && (file.type === 'style' || file.type === 'css')) {
         model.iframe.contentWindow.postMessage({
           name: 'css',
           content: {

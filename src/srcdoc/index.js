@@ -96,25 +96,25 @@ function init(data) {
     .map(s => ({
       url: s.src,
       name: '.html',
-      type: 'js',
+      type: 'script',
       content: s.textContent,
       el: s
     }))
 
   state
     .links
-    .filter(l => l.type === 'css' && !l.content)
+    .filter(l => l.type === 'style' && !l.content)
     .forEach(loadRemoteStyle)
 
   state.files
     .filter(f => f.type === 'style')
-    .concat(state.links.filter(l => l.type === 'css' && l.content))
+    .concat(state.links.filter(l => l.type === 'style' && l.content))
     .forEach(loadStyle)
 
   Promise
     .all(
       state.links
-      .filter(l => l.type === 'js')
+      .filter(l => l.type === 'script')
       .map(loadRemoteScript)
       .concat(scripts.map(s => s.url
         ? loadRemoteScript(s)

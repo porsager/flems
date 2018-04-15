@@ -1,6 +1,6 @@
 import m from 'mithril'
 import b from 'bss'
-import { endsWith } from '../utils'
+import { endsWith, ext } from '../utils'
 
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/javascript/javascript'
@@ -26,11 +26,11 @@ import logoIcon from '../icons/logo.svg'
 const logoIcon64 = btoa(logoIcon)
 
 const modes = {
-  html: {
+  document: {
     name: 'htmlmixed',
     lineWrapping: true
   },
-  js: {
+  script: {
     name: 'javascript',
     statementIndent: 2
   },
@@ -38,13 +38,12 @@ const modes = {
     name: 'text/typescript',
     statementIndent: 2
   },
-  css: 'css'
+  style: 'css'
 }
 
-const noSmartIndent = {
-  ',': true,
-  '.': true
-}
+// Legacy support
+modes.js = modes.script
+modes.html = modes.document
 
 export default (model, actions) =>
   m('.editor'
@@ -152,7 +151,7 @@ export default (model, actions) =>
           return
 
         const content = file.patched || file.content || ''
-            , mode = modes[file.name.split('.').pop()] || 'javascript'
+            , mode = modes[ext(file.name)] || modes[file.type] || 'javascript'
 
         let selections
 

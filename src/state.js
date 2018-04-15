@@ -66,6 +66,7 @@ export function sanitize(state) {
     if (!urlRegex.test(f.url))
       throw new Error('Link url\'s should start with http:// or https://')
 
+    f.type = extMap[f.type] || f.type
     f.name = f.name || f.url.slice(f.url.lastIndexOf('/') + 1)
   })
 

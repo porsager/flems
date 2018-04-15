@@ -24,7 +24,7 @@ Flems(document.body, {
     }],
     links: [{
         name: 'mithril',
-        type: 'js',
+        type: 'script',
         url: 'https://unpkg.com/mithril'
     }]
 })
