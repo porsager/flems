@@ -48,7 +48,7 @@ export default function(dom, state, runtimeUrl) {
     dragging      : false,
     refreshCm     : stream(),
     focus         : stream(),
-    vertical      : () => dom.offsetWidth < 600,
+    vertical      : () => dom.offsetWidth * 1.25 < dom.offsetHeight,
     toolbar       : () => model.state.toolbar ? 38 : 0
   }
 

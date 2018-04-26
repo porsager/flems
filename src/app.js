@@ -25,12 +25,8 @@ export default (model, actions) =>
      + b
       .flexGrow(1)
       .d('flex')
-      .$media('(max-width:600px)',
-        b
-        .flexDirection('column')
-        .position('relative')
-      )
-
+      .flexDirection(model.vertical() && 'column')
+      .position(model.vertical() && 'relative')
     , {
       style: b.ai(!model.vertical() && 'stretch').style
     },
