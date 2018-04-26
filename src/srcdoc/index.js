@@ -220,22 +220,21 @@ function loadRemoteScript(script) {
   })
 }
 
-const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , staticImportRegex = new RegExp(' from [\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]', 'g')
-    , dynamicImportRegex = new RegExp('import\\([\'"]([a-zA-Z@](?!(ttps?://)).*)[\'"]\\)', 'g')
+const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
+    , staticImportRegex = new RegExp('(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)[\'"])([a-zA-Z0-9@/._-]*)([\'"])', 'g')
+    , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
 function flemsLoadScript(script) {
   const isModule = isModuleRegex.test(script.content) ? 'module' : undefined
 
   const content = isModule
     ? Object.keys(moduleExports).reduce((acc, m) =>
-      acc
-        .replace(new RegExp(` from ['"]./${m}['"]`, 'i'), ' from "' + moduleExports[m] + '"')
-        .replace(new RegExp(`import\\(['"]./${m}['"]\\)`, 'ig'), 'import("' + moduleExports[m] + '")')
-    , script.content
-      .replace(staticImportRegex, ' from "https://unpkg.com/$1?module"')
-      .replace(dynamicImportRegex, 'import("https://unpkg.com/$1?module")')
-    )
+      acc.replace(new RegExp(`(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)['"]).?\\/${m}.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+         .replace(new RegExp(`(import\\(['"]).?\\/${m}.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
+    , script.content)
+      .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
+      .replace(dynamicImportRegex, '$1https://unpkg.com/$2?module$3')
+
     : script.content
 
   const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
