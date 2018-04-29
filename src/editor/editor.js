@@ -153,6 +153,7 @@ export default (model, actions) =>
             , mode = modes[ext(file.name)] || modes[file.type] || 'javascript'
 
         let selections
+          , cursorTimer
 
         const editable = model.state.editable && file.editable !== false
 
@@ -164,17 +165,20 @@ export default (model, actions) =>
           file.doc = CodeMirror.Doc(content, mode)
           file.doc.on('change', e => actions.fileChange(file, file.doc.getValue()))
           file.doc.on('cursorActivity', () => {
-            actions.fileSelectionChange(
-              file,
-              file.doc.listSelections().map(s =>
-                s.anchor.line + ':' + s.anchor.ch +
-                (
-                  s.head && (s.anchor.line !== s.head.line || s.anchor.ch !== s.head.ch)
-                    ? '-' + s.head.line + ':' + s.head.ch
-                    : ''
-                )
-              ).join(',')
-            )
+            clearInterval(cursorTimer)
+            cursorTimer = setTimeout(() => {
+              actions.fileSelectionChange(
+                file,
+                file.doc.listSelections().map(s =>
+                  s.anchor.line + ':' + s.anchor.ch +
+                  (
+                    s.head && (s.anchor.line !== s.head.line || s.anchor.ch !== s.head.ch)
+                      ? '-' + s.head.line + ':' + s.head.ch
+                      : ''
+                  )
+                ).join(',')
+              )
+            }, 400)
           })
 
           if (file.selections) {
