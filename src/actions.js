@@ -1,7 +1,7 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { assign, ext } from './utils'
+import { assign, ext, findFile } from './utils'
 import { sanitize, createFlemsIoLink } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
@@ -59,6 +59,7 @@ export default function(model) {
 
   function setState(state) {
     model.state = sanitize(state)
+    select(findFile(model.state, model.state.selected))
     refresh()
     m.redraw()
   }
@@ -154,15 +155,15 @@ export default function(model) {
         ? patch(content, link.patches)[0]
         : content
 
-      if (model.state.selected === link.url)
-        select(link.url)
+      if (model.selected() === link)
+        select(link)
     }).catch(() => {
       // Ignore errors and stay with script src=url
     })
   }
 
-  function select(name, file) {
-    model.selected(name)
+  function select(file) {
+    model.selected(file)
     file && model.focus(file)
     changed()
   }
@@ -228,7 +229,7 @@ export default function(model) {
   }
 
   function consoleOutput(data) {
-    const file = model.findFile(model.state, data.file)
+    const file = findFile(model.state, data.file)
 
     if (file && file.type === 'script' && tryBabel(data)) {
       file.compiler = 'babel'
@@ -237,7 +238,7 @@ export default function(model) {
     }
 
     data.stack.forEach(s => {
-      const file = model.findFile(model.state, s.file)
+      const file = findFile(model.state, s.file)
       if (!file || !file.map)
         return
 

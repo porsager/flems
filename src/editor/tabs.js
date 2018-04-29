@@ -50,8 +50,8 @@ function linkTabs(model, actions) {
         }, '(modified)'),
         link.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
-      () => link.content && actions.select(link.url),
-      link === model.selectedFile(),
+      () => link.content && actions.select(link),
+      link === model.selected(),
       model
     )
   )
@@ -64,8 +64,8 @@ function fileTabs(model, actions) {
         file.name,
         file.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
-      () => actions.select(file.name),
-      file === model.selectedFile(),
+      () => actions.select(file),
+      file === model.selected(),
       model
     )
   )

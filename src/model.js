@@ -11,19 +11,12 @@ export default function(dom, state, runtimeUrl) {
   state = sanitize(state)
 
   const id = randomId()
-      , selected = stream(state.selected)
-      , selectedFile = selected.map(s => findFile(state, s))
-
-  state.middle = Math.min(Math.max(state.middle, 0), 100)
-  selected.map(name => state.selected = name)
 
   const model = {
     id,
     dom,
     state,
-    findFile,
-    selected,
-    selectedFile,
+    selected      : stream(findFile(state, state.selected)),
     iOS           : 'overflowScrolling' in b,
     runtimeUrl    : runtimeUrl || runtimeUrlGuess || 'flems.html',
     console       : {

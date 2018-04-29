@@ -51,6 +51,8 @@ export function sanitize(state) {
       clean[key] = state[key]
   })
 
+  clean.middle = Math.min(Math.max(clean.middle, 0), 100)
+
   clean.files.forEach(f => {
     f.type = f.type || extMap[ext(f.name)]
     f.content = f.content || ''

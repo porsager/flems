@@ -140,13 +140,12 @@ export default (model, actions) =>
       const initialDoc = cm.getDoc()
 
       model.refreshCm.map(() => cm.refresh())
-      model.focus.map(({ line, column }) => {
+      model.focus.map(({ line = 0, column = 0 }) => {
         cm.setCursor(line - 1, column - 1)
         cm.focus()
       })
 
-      model.selectedFile
-      .map(file => {
+      model.selected.map(file => {
         if (!file)
           return
 
