@@ -122,8 +122,11 @@ function init(data) {
       ))
     )
     .then(() => {
-      send('loaded')
       state.files.filter(f => f.type === 'script').forEach(flemsLoadScript)
+      const e = document.createEvent('Event')
+      e.initEvent('DOMContentLoaded', true, true)
+      window.document.dispatchEvent(e)
+      send('loaded')
     })
     .catch(err => {
       consoleOutput('Error loading:\n\t' + err.join('\n\t'), 'error', { stack: '' })
