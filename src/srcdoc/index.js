@@ -123,9 +123,12 @@ function init(data) {
     )
     .then(() => {
       state.files.filter(f => f.type === 'script').forEach(flemsLoadScript)
-      const e = document.createEvent('Event')
-      e.initEvent('DOMContentLoaded', true, true)
-      window.document.dispatchEvent(e)
+      const domLoaded = document.createEvent('Event')
+      domLoaded.initEvent('DOMContentLoaded', true, true)
+      window.document.dispatchEvent(domLoaded)
+      const loaded = document.createEvent('Event')
+      loaded.initEvent('load', false, false)
+      window.dispatchEvent(loaded)
       send('loaded')
     })
     .catch(err => {
