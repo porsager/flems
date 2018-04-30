@@ -19,6 +19,7 @@ export const defaults = () => ({
   middle        : 50,
   selected      : '.js',
   color         : 'rgb(38,50,56)',
+  theme         : 'material',
   resizeable    : true,
   editable      : true,
   toolbar       : true,

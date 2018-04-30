@@ -7,16 +7,18 @@ import lockIcon from '../icons/lock.svg'
 export default (model, actions) =>
   m('nav'
     + b
-      .minHeight(38)
+      .position('relative')
       .d('flex')
       .c('gray')
       .w('100%')
+      .minHeight(model.toolbar())
       .background('rgb(246,246,246)')
       .fontSize(14)
+      .zi(20)
+      .boxShadow('0 1px 1px rgba(0,0,0,0.35)')
     ,
     m('.tabs'
       + b.d('flex')
-        .minHeight(38)
         .overflowX('auto')
         .overflowY('hidden')
         .flexGrow(1)
@@ -72,8 +74,8 @@ function fileTabs(model, actions) {
 }
 
 function tab(title, onclick, selected, model) {
-  return m('.tab'
-   + b.d('flex')
+  return m('.tab' + b
+    .d('flex')
     .ai('center')
     .transition('background .3s, color .3s')
     .minWidth(40)
@@ -90,7 +92,6 @@ function tab(title, onclick, selected, model) {
     style: selected
       ? b
       .background(model.state.color)
-      .h(40)
       .zi(1)
       .c('white')
       .flexShrink(0)

@@ -90,6 +90,7 @@ Flems is customizable to fit your need. If you don't want the toolbar or don't c
     middle        : 50,
     selected      : '.js',
     color         : 'rgb(38,50,56)',
+    theme         : 'material', // and 'none' or 'default'
     resizeable    : true,
     editable      : true,
     toolbar       : true,

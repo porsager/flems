@@ -35,7 +35,6 @@ export default (model, actions) =>
         .position('relative')
         .minWidth(50)
         .minHeight(model.toolbar())
-        .background(model.state.color)
         .zIndex(1)
         .flexGrow(1)
       , {

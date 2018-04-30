@@ -10,7 +10,7 @@ import shareIcon from '../icons/share.svg'
 
 export default (model, actions) =>
   m('.toolbar'
-    + b.w('100%').h(38)
+    + b.w('100%').h(model.toolbar())
     .p(4)
     .position('relative')
     .flexShrink(0)
@@ -18,8 +18,18 @@ export default (model, actions) =>
     .alignItems('center')
     .d('flex')
     .c('gray')
+    .zi(20)
     .background('rgb(246,246,246)')
     .boxShadow('0 1px 1px rgba(0,0,0,0.35)')
+    .$before(
+      b
+      .content('')
+      .w(2)
+      .h('100%')
+      .position('absolute')
+      .left(-2)
+      .bc('inherit')
+    )
   ,
     toolbarButton(model.state.autoReload ? pauseIcon : playIcon, {
       title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',
