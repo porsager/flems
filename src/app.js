@@ -34,7 +34,7 @@ export default (model, actions) =>
        + b
         .position('relative')
         .minWidth(50)
-        .minHeight(50)
+        .minHeight(model.toolbar())
         .background(model.state.color)
         .zIndex(1)
         .flexGrow(1)
@@ -51,7 +51,7 @@ export default (model, actions) =>
       m('.runtime'
         + b.position('relative')
           .minWidth(50)
-          .minHeight(50)
+          .minHeight(model.toolbar())
           .b(0)
           .r(0)
           .d('flex')
