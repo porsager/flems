@@ -11,7 +11,7 @@ import shareIcon from '../icons/share.svg'
 export default (model, actions) =>
   m('.toolbar'
     + b.w('100%').h(model.toolbar())
-    .p(4)
+    .p(4, 6)
     .position('relative')
     .flexShrink(0)
     .justifyContent('flex-end')
