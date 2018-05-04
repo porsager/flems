@@ -5,7 +5,7 @@ import icon from '../components/icon'
 import lockIcon from '../icons/lock.svg'
 
 export default (model, actions) =>
-  m('nav'
+  m('nav.toolbar'
     + b
       .position('relative')
       .d('flex')
