@@ -1,8 +1,21 @@
 import m from 'mithril'
 import b from 'bss'
 
+const getBounds = (dom) => {
+  const container = dom.closest('.flems')
+      , outer = container.parentNode.getBoundingClientRect()
+      , inner = dom.parentNode.getBoundingClientRect()
+
+  return {
+    top: inner.top - outer.top,
+    bottom: inner.bottom - outer.bottom,
+    right: inner.right - outer.right,
+    width: inner.width
+  }
+}
+
 const setTriangle = ({ dom }) => {
-  const rect = dom.parentNode.getBoundingClientRect()
+  const rect = getBounds(dom)
   if (rect.top < 40) {
     dom.style.bottom = 0
     dom.style.borderBottom = '5px solid white'
@@ -13,11 +26,11 @@ const setTriangle = ({ dom }) => {
 }
 
 const position = ({ dom }) => {
-  const rect = dom.parentNode.getBoundingClientRect()
+  const rect = getBounds(dom)
 
   const left = Math.min(
     -dom.clientWidth / 2 + dom.parentNode.clientWidth / 2,
-    -dom.clientWidth + rect.width + (window.innerWidth - rect.right - 2)
+    -dom.clientWidth + rect.width + ( - rect.right - 2)
   )
 
   dom.style.left = left + 'px'
