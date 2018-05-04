@@ -1,6 +1,6 @@
 import m from 'mithril'
 import b from 'bss'
-import { endsWith, ext } from '../utils'
+import { endsWith, ext, debounced } from '../utils'
 
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/javascript/javascript'
@@ -152,7 +152,6 @@ export default (model, actions) =>
             , mode = modes[ext(file.name)] || modes[file.type] || 'javascript'
 
         let selections
-          , cursorTimer
 
         const editable = model.state.editable && file.editable !== false
 
@@ -162,35 +161,17 @@ export default (model, actions) =>
 
         if (!file.doc) {
           file.doc = CodeMirror.Doc(content, mode)
-          file.doc.on('change', e => actions.fileChange(file, file.doc.getValue()))
-          file.doc.on('cursorActivity', () => {
-            clearInterval(cursorTimer)
-            cursorTimer = setTimeout(() => {
-              actions.fileSelectionChange(
-                file,
-                file.doc.listSelections().map(s =>
-                  s.anchor.line + ':' + s.anchor.ch +
-                  (
-                    s.head && (s.anchor.line !== s.head.line || s.anchor.ch !== s.head.ch)
-                      ? '-' + s.head.line + ':' + s.head.ch
-                      : ''
-                  )
-                ).join(',')
-              )
-            }, 400)
-          })
 
-          if (file.selections) {
-            selections = file.selections.split(',').map(s => (
-              s = s.split('-').map(c =>
-                (c = c.split(':'), { line: parseInt(c[0]) || 0, ch: parseInt(c[1]) || 0 })
-              ),
-              {
-                anchor: s[0],
-                head: s[1] || s[0]
-              })
-            )
-          }
+          file.doc.on('change', debounced(400, e => {
+            actions.fileChange(file, file.doc.getValue())
+          }))
+
+          file.doc.on('cursorActivity', debounced(400, () => {
+            actions.fileSelectionChange(file, serializeSelections(file.doc.listSelections()))
+          }))
+
+          if (file.selections)
+            selections = deserializeSelections(file.selections)
         }
 
         if (content !== file.doc.getValue())
@@ -257,4 +238,27 @@ function selectLineNumber(cm, line, gutter, e) {
       { origin: '*mouse' }
     )
   }
+}
+
+function deserializeSelections(selections) {
+  return selections.split(',').map(s => (
+    s = s.split('-').map(c =>
+      (c = c.split(':'), { line: parseInt(c[0]) || 0, ch: parseInt(c[1]) || 0 })
+    ),
+    {
+      anchor: s[0],
+      head: s[1] || s[0]
+    })
+  )
+}
+
+function serializeSelections(selections) {
+  return selections.map(s =>
+    s.anchor.line + ':' + s.anchor.ch +
+    (
+      s.head && (s.anchor.line !== s.head.line || s.anchor.ch !== s.head.ch)
+        ? '-' + s.head.line + ':' + s.head.ch
+        : ''
+    )
+  ).join(',')
 }

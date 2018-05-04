@@ -1,7 +1,7 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { assign, ext, findFile } from './utils'
+import { assign, ext, findFile, debounced } from './utils'
 import { sanitize, createFlemsIoLink } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
@@ -11,6 +11,11 @@ const firefox = navigator.userAgent.indexOf('Firefox') !== -1
 export default function(model) {
   let resizeTimer = null
     , debounceTimer = null
+
+  const changed = debounced(20, () => actions.onchange(model.state))
+      , change = fn => value => (fn(value), changed())
+
+  model.selected.map(s => model.state.selected = s.url || s.name)
 
   const actions = {
     onchange      : () => { /* no-op */ },
@@ -46,20 +51,9 @@ export default function(model) {
     )
   }
 
-  function change(fn) {
-    return function(value) {
-      fn(value)
-      changed()
-    }
-  }
-
-  function changed() {
-    actions.onchange(model.state)
-  }
-
   function setState(state) {
     model.state = sanitize(state)
-    select(findFile(model.state, model.state.selected))
+    select(findFile(model.state, model.state.selected), true)
     refresh()
     m.redraw()
   }
@@ -68,7 +62,6 @@ export default function(model) {
     dom.addEventListener('mousedown', e => {
       dom.href = createFlemsIoLink(model.state)
     }, true)
-
   }
 
   function startDragging() {
@@ -162,10 +155,10 @@ export default function(model) {
     })
   }
 
-  function select(file) {
+  function select(file, silent) {
     model.selected(file)
     file && model.focus(file)
-    changed()
+    !silent && changed()
   }
 
   function initIframe(iframe) {
@@ -258,37 +251,37 @@ export default function(model) {
   }
 
   function fileChange(file, content) {
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(() => {
-      if (file.url)
-        file.patched = content
-      else
-        file.content = content
+    if (file.url)
+      file.patched = content
+    else
+      file.content = content
 
-      if (file.url)
-        file.patches = diff(file.content, file.patched)
+    if (file.url)
+      file.patches = diff(file.content, file.patched)
 
-      changed()
+    changed()
 
-      if (model.state.autoReload && (file.type === 'style' || file.type === 'css')) {
-        model.iframe.contentWindow.postMessage({
-          name: 'css',
-          content: {
-            name: file.name,
-            url: file.url,
-            content: file.patched || file.content
-          }
-        }, '*')
-      } else {
-        refresh()
-      }
-      m.redraw()
-    }, 400)
+    if (model.state.autoReload && (file.type === 'style' || file.type === 'css')) {
+      model.iframe.contentWindow.postMessage({
+        name: 'css',
+        content: {
+          name: file.name,
+          url: file.url,
+          content: file.patched || file.content
+        }
+      }, '*')
+    } else {
+      refresh()
+    }
+    m.redraw()
   }
 
   function fileSelectionChange(file, selections) {
-    file.selections = selections === '0:0' ? undefined : selections
-    changed()
+    selections = selections === '0:0' ? undefined : selections
+    if (selections !== file.selections) {
+      file.selections = selections
+      changed()
+    }
   }
 
   function changeMiddle(e) {

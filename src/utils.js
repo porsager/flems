@@ -16,6 +16,11 @@ export function endsWith(suffix, str) {
 
 export const wait = ms => () => new Promise(res => setTimeout(res, ms))
 
+export const debounced = (ms, fn, timer) => function() {
+  clearTimeout(timer)
+  timer = setTimeout(() => fn.apply(fn, arguments), ms)
+}
+
 export function assign(obj, obj2 = {}) {
   const newObj = {}
   Object.keys(obj).concat(Object.keys(obj2)).forEach(key =>

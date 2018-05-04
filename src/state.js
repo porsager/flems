@@ -45,27 +45,31 @@ export const defaults = () => ({
 })
 
 export function sanitize(state) {
-  const clean = assign(defaults(), state)
+  const d = defaults()
 
-  Object.keys(state).forEach(key => {
-    if (key in clean)
-      clean[key] = state[key]
+  Object.keys(d).forEach(key => {
+    if (!(key in state))
+      state[key] = d[key]
   })
 
-  clean.middle = Math.min(Math.max(clean.middle, 0), 100)
+  state.middle = Math.min(Math.max(state.middle, 0), 100)
 
-  clean.files.forEach(f => {
+  state.files.forEach(f => {
     f.type = f.type || extMap[ext(f.name)]
     f.content = f.content || ''
 
     if (typeof f.compiler === 'string' && !(f.compiler in compilers))
-      throw new Error(f.compiler + ' is not supported')
+      throw new Error('Unknown compler: ' + f.compiler)
   })
 
-  if (clean.files.some(f => f.name.toLowerCase() === name.toLowerCase()))
-    throw new Error('Multiple files with the same name: ' + name + ' cannot exist')
+  state.files.reduce((acc, f) => {
+    if (acc.indexOf(f.name) > -1)
+      throw new Error('Multiple files with the same name: ' + name)
 
-  clean.links.forEach(f => {
+    return acc.concat(f.name)
+  }, [])
+
+  state.links.forEach(f => {
     if (!urlRegex.test(f.url))
       throw new Error('Link url\'s should start with http:// or https://')
 
@@ -73,35 +77,32 @@ export function sanitize(state) {
     f.name = f.name || f.url.slice(f.url.lastIndexOf('/') + 1)
   })
 
-  if (!findFile(clean, clean.selected))
-    clean.selected = (clean.files[0] || {}).name || (clean.links[0] || {}).url
+  if (!findFile(state, state.selected))
+    state.selected = (state.files[0] || {}).name || (state.links[0] || {}).url
+
+  return state
+}
+
+export const createFlemsIoLink = state => {
+  return 'https://flems.io/#0=' + lz.compressToEncodedURIComponent(
+    JSON.stringify(clean(state))
+  )
+}
+
+function clean(state) {
+  const clean = Object.keys(defaults()).reduce((acc, x) =>
+    (x in state && state[x] !== defaults[x] && (acc[x] = state[x]), acc)
+  , {})
+
+  if (state.files && state.files.length)
+    clean.files = pluck(state.files, ['name', 'content', 'compiler', 'selections'])
+
+  if (state.links)
+    clean.links = pluck(state.links, ['name', 'url', 'type', 'patches', 'selections'])
 
   return clean
 }
 
-const d = defaults()
-
-export const createFlemsIoLink = state => {
-  return 'https://flems.io/#0=' + lz.compressToEncodedURIComponent(
-    JSON.stringify(state, function Include(key, value) {
-      if (this !== state || value === state)
-        return value
-
-      if (key === 'links' && value.length === 0)
-        return
-
-      if (key === 'files' && value && value.length === d.files.length
-        && d.files.every((f, i) => value[i].name === f.name && value[i].content === f.content))
-        return
-
-      if (value === state.files)
-        return state.files.map(({ name, content, compiler, selections }) => ({ name, content, compiler, selections }))
-
-      if (value === state.links)
-        return state.links.map(({ name, url, type, patches, selections }) => ({ name, url, type, patches, selections }))
-
-      if (key in d && d[key] !== value)
-        return value
-    })
-  )
+function pluck(array = [], fields) {
+  return array.map(a => fields.reduce((acc, x) => (acc[x] = a[x], acc), {}))
 }
