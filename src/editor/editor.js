@@ -1,6 +1,6 @@
 import m from 'mithril'
 import b from 'bss'
-import { endsWith, ext, debounced } from '../utils'
+import { endsWith, ext } from '../utils'
 
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/javascript/javascript'
@@ -151,8 +151,6 @@ export default (model, actions) =>
         const content = file.patched || file.content || ''
             , mode = modes[ext(file.name)] || modes[file.type] || 'javascript'
 
-        let selections
-
         const editable = model.state.editable && file.editable !== false
 
         cm.setOption('lineWrapping', mode.lineWrapping || false)
@@ -161,31 +159,41 @@ export default (model, actions) =>
 
         if (!file.doc) {
           file.doc = CodeMirror.Doc(content, mode)
+          file.doc.ignoreCursor = true
 
-          file.doc.on('change', debounced(400, e => {
-            actions.fileChange(file, file.doc.getValue())
-          }))
+          file.doc.on('change', (cm, change) => {
+            if (change.origin === 'setValue')
+              return
 
-          file.doc.on('cursorActivity', debounced(400, () => {
-            actions.fileSelectionChange(file, serializeSelections(file.doc.listSelections()))
-          }))
+            file.doc.ignoreCursor = true
+            Promise.resolve().then(() => file.doc.ignoreCursor = false)
 
-          if (file.selections)
-            selections = deserializeSelections(file.selections)
+            actions.fileChange(file, file.doc.getValue(), serializeSelections(file.doc.listSelections()))
+          })
+
+          file.doc.on('cursorActivity', (a, b) => {
+            if (!file.doc.ignoreCursor)
+              actions.fileSelectionChange(file, serializeSelections(file.doc.listSelections()))
+          })
         }
+
+        file.doc.ignoreCursor = true
+        Promise.resolve().then(() => file.doc.ignoreCursor = false)
 
         if (content !== file.doc.getValue())
           file.doc.setValue(content)
 
         const focusAfter = cm.getDoc() !== initialDoc || model.state.autoFocus
 
-        cm.swapDoc(file.doc)
+        if (cm.getDoc() !== file.doc)
+          cm.swapDoc(file.doc)
 
+        const selections = deserializeSelections(file.selections)
         if (selections && selections.length) {
-          setTimeout(() => {
-            file.doc.setSelections(selections)
+          file.doc.setSelections(selections)
+          requestAnimationFrame(() => {
             cm.scrollIntoView(selections[0].head, 500)
-          }, 0)
+          })
         }
 
         if (focusAfter)
@@ -240,7 +248,7 @@ function selectLineNumber(cm, line, gutter, e) {
   }
 }
 
-function deserializeSelections(selections) {
+function deserializeSelections(selections = '') {
   return selections.split(',').map(s => (
     s = s.split('-').map(c =>
       (c = c.split(':'), { line: parseInt(c[0]) || 0, ch: parseInt(c[1]) || 0 })

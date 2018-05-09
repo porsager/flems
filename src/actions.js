@@ -1,7 +1,7 @@
 import m from 'mithril'
 import inspect from 'object-inspect'
 import compilers from './compilers'
-import { assign, ext, findFile, debounced } from './utils'
+import { ext, findFile } from './utils'
 import { sanitize, createFlemsIoLink } from './state'
 import { diff, patch } from './dmp'
 import SourceMap from 'source-map'
@@ -11,8 +11,9 @@ const firefox = navigator.userAgent.indexOf('Firefox') !== -1
 export default function(model) {
   let resizeTimer = null
     , debounceTimer = null
+    , iframeState
 
-  const changed = debounced(20, () => actions.onchange(model.state))
+  const changed = () => actions.onchange(model.state)
       , change = fn => value => (fn(value), changed())
 
   model.selected.map(s => model.state.selected = s.url || s.name)
@@ -54,7 +55,7 @@ export default function(model) {
   function setState(state) {
     model.state = sanitize(state)
     select(findFile(model.state, model.state.selected), true)
-    refresh()
+    refreshFile()
     m.redraw()
   }
 
@@ -157,7 +158,6 @@ export default function(model) {
 
   function select(file, silent) {
     model.selected(file)
-    file && model.focus(file)
     !silent && changed()
   }
 
@@ -167,29 +167,30 @@ export default function(model) {
   }
 
   function iframeReady() {
-    Promise.all(model.state.files.filter(f => f.content).map(getContent))
-    .then(files => {
-      model.iframe.contentWindow.postMessage({
-        name: 'init',
-        content: {
-          id: model.id,
-          state: {
-            files: files.map(({ name, type, content }) => ({ name, type, content })),
-            links: model.state.links.map(link => ({
-              type: link.type,
-              name: link.name,
-              url : link.url,
-              content: link.patched || link.content
-            }))
-          }
+    model.iframe.contentWindow.postMessage({
+      name: 'init',
+      content: {
+        id: model.id,
+        state: {
+          files: iframeState,
+          links: model.state.links.map(link => ({
+            type: link.type,
+            name: link.name,
+            url : link.url,
+            content: link.patched || link.content
+          }))
         }
-      }, '*')
-    })
+      }
+    }, '*')
   }
 
   function getContent(file) {
     if (!file.compiler)
-      return file
+      return {
+        name: file.name,
+        type: file.type,
+        content: file.content
+      }
 
     const compile = file.compiler === 'function'
       ? file.compiler
@@ -202,16 +203,22 @@ export default function(model) {
       if (result.map)
         file.map = result.map
 
-      return assign(file, {
-        content: result.code || ''
-      })
+      return {
+        name: file.name,
+        type: file.type,
+        content: result.code
+      }
     }).catch(err => {
       consoleOutput({
         content: ['Error compiling ' + file.compiler + ':', inspect(err)],
         type: 'error',
         stack: []
       })
-      return file
+      return {
+        name: file.name,
+        type: file.type,
+        content: file.content
+      }
     })
   }
 
@@ -250,31 +257,44 @@ export default function(model) {
     model.console.output.push(data)
   }
 
-  function fileChange(file, content) {
+  function fileChange(file, content, selections) {
     if (file.url)
       file.patched = content
     else
       file.content = content
 
-    if (file.url)
-      file.patches = diff(file.content, file.patched)
+    if (selections)
+      file.selections = selections === '0:0' ? undefined : selections
 
     changed()
 
-    if (model.state.autoReload && (file.type === 'style' || file.type === 'css')) {
-      model.iframe.contentWindow.postMessage({
-        name: 'css',
-        content: {
-          name: file.name,
-          url: file.url,
-          content: file.patched || file.content
-        }
-      }, '*')
-    } else {
-      refresh()
-    }
-    m.redraw()
+    refreshFile(file)
   }
+
+  function refreshFile(file) {
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => {
+      if (!file)
+        return refresh()
+
+      if (file.url)
+        file.patches = diff(file.content, file.patched)
+
+      if (model.state.autoReload && (file.type === 'style' || file.type === 'css')) {
+        model.iframe.contentWindow.postMessage({
+          name: 'css',
+          content: {
+            name: file.name,
+            url: file.url,
+            content: file.patched || file.content
+          }
+        }, '*')
+      } else {
+        refresh()
+      }
+    }, 400)
+  }
+
 
   function fileSelectionChange(file, selections) {
     selections = selections === '0:0' ? undefined : selections
@@ -317,15 +337,16 @@ export default function(model) {
     model.loading = true
     model.console.output = []
 
-    reloadIframe()
+    Promise.all(model.state.files.filter(f => f.content).map(getContent)).then(reloadIframe)
 
     m.redraw()
   }
 
-  function reloadIframe() {
+  function reloadIframe(files) {
     if (firefox)
       model.iframe.src += '?'
 
+    iframeState = files
     model.iframe.src = model.runtimeUrl
   }
 }
