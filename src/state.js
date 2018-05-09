@@ -1,5 +1,5 @@
 import lz from 'lz-string'
-import { assign, ext, urlRegex, findFile } from './utils'
+import { ext, urlRegex, findFile } from './utils'
 import compilers from './compilers'
 
 const extMap = {
@@ -73,7 +73,7 @@ export function sanitize(state) {
     if (!urlRegex.test(f.url))
       throw new Error('Link url\'s should start with http:// or https://')
 
-    f.type = extMap[f.type] || f.type
+    f.type = extMap[f.type] || f.type || extMap[ext(f.url)]
     f.name = f.name || f.url.slice(f.url.lastIndexOf('/') + 1)
   })
 
