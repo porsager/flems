@@ -30,7 +30,7 @@ const position = ({ dom }) => {
 
   const left = Math.min(
     -dom.clientWidth / 2 + dom.parentNode.clientWidth / 2,
-    -dom.clientWidth + rect.width + ( - rect.right - 2)
+    -dom.clientWidth + rect.width + ( -rect.right - 4)
   )
 
   dom.style.left = left + 'px'
@@ -62,6 +62,7 @@ export default ({
     .position('absolute')
     .o(0)
     .c('gray')
+    .zi(zIndex)
     .transform('scale(0)')
     .w('auto')
     .h(26)
@@ -87,6 +88,7 @@ export default ({
    + b
     .pointerEvents('none')
     .o(0)
+    .zi(zIndex + 1)
     .transform('scale(0)')
     .position('absolute')
     .transformOrigin('bottom center')
