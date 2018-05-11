@@ -231,7 +231,7 @@ const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)
     , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
 function flemsLoadScript(script) {
-  const isModule = isModuleRegex.test(script.content) ? 'module' : undefined
+  const isModule = !script.url && isModuleRegex.test(script.content) ? 'module' : undefined
 
   const content = isModule
     ? Object.keys(moduleExports).reduce((acc, m) =>
