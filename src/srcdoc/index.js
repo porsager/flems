@@ -226,7 +226,7 @@ function loadRemoteScript(script) {
   })
 }
 
-const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
+const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
     , staticImportRegex = new RegExp('(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)[\'"])([a-zA-Z0-9@/._-]*)([\'"])', 'g')
     , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
