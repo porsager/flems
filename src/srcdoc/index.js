@@ -1,6 +1,7 @@
 import inspect from 'object-inspect'
 import 'mithril/promise/promise'
 import { endsWith } from '../utils'
+import toposort from 'toposort'
 
 let id = window.name
 let currentScript = {}
@@ -9,6 +10,11 @@ let consoleCount = 0
 const parent = window.parent
 const blobUrls = {}
 const moduleExports = {}
+
+const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
+    , topoSortRegex = new RegExp('import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
+    , staticImportRegex = new RegExp('(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)[\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"])', 'g')
+    , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
 try {
   window.parent = null
@@ -111,6 +117,10 @@ function init(data) {
     .concat(state.links.filter(l => l.type === 'style' && l.content))
     .forEach(loadStyle)
 
+  state.files.filter(f => f.type === 'script').forEach(moduleCheck)
+
+  const topology = getTopology(state.files)
+
   Promise
     .all(
       state.links
@@ -122,7 +132,13 @@ function init(data) {
       ))
     )
     .then(() => Promise.all(
-      state.files.filter(f => f.type === 'script').map(flemsLoadScript)
+      state.files.filter(f => f.type === 'script')
+        .sort((a, b) =>
+          a.module && b.module
+            ? topology.indexOf(a.name) < topology.indexOf(b.name)
+            : a.module < b.module
+        )
+        .map(flemsLoadScript)
     ))
     .then((r) => {
       window.dispatchEvent(new Event('DOMContentLoaded'))
@@ -132,6 +148,19 @@ function init(data) {
     .catch(err => {
       consoleOutput('Error loading:\n\t' + (Array.isArray(err) ? err.join('\n') : err), 'error', { stack: '' })
     })
+}
+
+function getTopology(files) {
+  return toposort(files.filter(f => f.module).reduce((acc, file) => {
+    file.content.split('\n').map(f => {
+      const match = (f.match(topoSortRegex) || [])[1]
+      if (match) {
+        const found = files.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
+        found && acc.push([file.name, found.name])
+      }
+    })
+    return acc
+  }, []))
 }
 
 function patch(original, monkey, returnFirst) {
@@ -224,18 +253,17 @@ function loadRemoteScript(script) {
   })
 }
 
-const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , staticImportRegex = new RegExp('(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)[\'"])([a-zA-Z0-9@/._-]*)([\'"])', 'g')
-    , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
+function moduleCheck(script) {
+  script.module = isModuleRegex.test(script.content)
+  return script
+}
 
 function flemsLoadScript(script) {
   return new Promise((resolve, reject) => {
-    const isModule = !script.url && isModuleRegex.test(script.content) ? 'module' : undefined
-
-    const content = isModule
+    const content = script.module
       ? Object.keys(moduleExports).reduce((acc, m) =>
-        acc.replace(new RegExp(`(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)['"]).?\\/${m}.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
-           .replace(new RegExp(`(import\\(['"]).?\\/${m}.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
+        acc.replace(new RegExp(`(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+           .replace(new RegExp(`(import\\(['"])\\.?\\/${m}\\.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
       , script.content)
         .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
         .replace(dynamicImportRegex, '$1https://unpkg.com/$2?module$3')
@@ -245,7 +273,8 @@ function flemsLoadScript(script) {
     const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
 
     blobUrls[url] = script
-    if (isModule)
+
+    if (script.module)
       moduleExports[script.name] = moduleExports[script.name.substring(0, script.name.lastIndexOf('.'))] = url
 
     const el = create('script', {
@@ -253,7 +282,7 @@ function flemsLoadScript(script) {
       charset: 'utf-8',
       async: false,
       defer: false,
-      type: isModule ? 'module' : ''
+      type: script.module ? 'module' : ''
     })
 
     if (script.el)

@@ -38,6 +38,7 @@
     "rollup-plugin-uglify": "3.0.0",
     "source-map": "0.6.1",
     "svgo": "1.0.5",
+    "toposort": "2.0.2",
     "wright": "1.0.1"
   }
 }
