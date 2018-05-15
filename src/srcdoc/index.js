@@ -121,18 +121,16 @@ function init(data) {
         : flemsLoadScript(s)
       ))
     )
-    .then(() => {
-      state.files.filter(f => f.type === 'script').forEach(flemsLoadScript)
-      const domLoaded = document.createEvent('Event')
-      domLoaded.initEvent('DOMContentLoaded', true, true)
-      window.document.dispatchEvent(domLoaded)
-      const loaded = document.createEvent('Event')
-      loaded.initEvent('load', false, false)
-      window.dispatchEvent(loaded)
+    .then(() => Promise.all(
+      state.files.filter(f => f.type === 'script').map(flemsLoadScript)
+    ))
+    .then((r) => {
+      window.dispatchEvent(new Event('DOMContentLoaded'))
+      window.dispatchEvent(new Event('load'))
       send('loaded')
     })
     .catch(err => {
-      consoleOutput('Error loading:\n\t' + err.join('\n\t'), 'error', { stack: '' })
+      consoleOutput('Error loading:\n\t' + (Array.isArray(err) ? err.join('\n') : err), 'error', { stack: '' })
     })
 }
 
@@ -231,41 +229,44 @@ const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)
     , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
 function flemsLoadScript(script) {
-  const isModule = !script.url && isModuleRegex.test(script.content) ? 'module' : undefined
+  return new Promise((resolve, reject) => {
+    const isModule = !script.url && isModuleRegex.test(script.content) ? 'module' : undefined
 
-  const content = isModule
-    ? Object.keys(moduleExports).reduce((acc, m) =>
-      acc.replace(new RegExp(`(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)['"]).?\\/${m}.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
-         .replace(new RegExp(`(import\\(['"]).?\\/${m}.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
-    , script.content)
-      .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
-      .replace(dynamicImportRegex, '$1https://unpkg.com/$2?module$3')
+    const content = isModule
+      ? Object.keys(moduleExports).reduce((acc, m) =>
+        acc.replace(new RegExp(`(import\\s*{?[a-zA-Z,\\s]*}?\\s*(?: from |)['"]).?\\/${m}.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+           .replace(new RegExp(`(import\\(['"]).?\\/${m}.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
+      , script.content)
+        .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
+        .replace(dynamicImportRegex, '$1https://unpkg.com/$2?module$3')
 
-    : script.content
+      : script.content
 
-  const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
+    const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
 
-  blobUrls[url] = script
-  if (isModule)
-    moduleExports[script.name] = moduleExports[script.name.substring(0, script.name.lastIndexOf('.'))] = url
+    blobUrls[url] = script
+    if (isModule)
+      moduleExports[script.name] = moduleExports[script.name.substring(0, script.name.lastIndexOf('.'))] = url
 
-  const el = create('script', {
-    src: url,
-    charset: 'utf-8',
-    async: false,
-    defer: false,
-    type: isModule ? 'module' : ''
+    const el = create('script', {
+      src: url,
+      charset: 'utf-8',
+      async: false,
+      defer: false,
+      type: isModule ? 'module' : ''
+    })
+
+    if (script.el)
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
+
+    el.onerror = reject
+    el.onload = resolve
+    currentScript = script
+
+    script.el
+      ? script.el.parentNode.replaceChild(el, script.el)
+      : document.body.appendChild(el)
   })
-
-  if (script.el)
-    Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
-
-  el.onerror = err => consoleOutput(String(err), 'error', err)
-  currentScript = script
-
-  script.el
-    ? script.el.parentNode.replaceChild(el, script.el)
-    : document.body.appendChild(el)
 }
 
 function create(tag, options) {
