@@ -337,7 +337,7 @@ export default function(model) {
     model.loading = true
     model.console.output = []
 
-    Promise.all(model.state.files.filter(f => f.content).map(getContent)).then(reloadIframe)
+    Promise.all(model.state.files.map(getContent)).then(reloadIframe)
 
     m.redraw()
   }
