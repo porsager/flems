@@ -25,6 +25,7 @@ export default function(model) {
     resetSize     : change(() => actions.setMiddle(50)),
     loaded        : () => model.loading = false,
     fileSelectionChange,
+    selectFileByIndex,
     toggleAutoReload,
     onConsoleKeyDown,
     onConsoleInput,
@@ -159,6 +160,11 @@ export default function(model) {
   function select(file, silent) {
     model.selected(file)
     !silent && changed()
+  }
+
+  function selectFileByIndex(index) {
+    const file = model.state.files.concat(model.state.links)[index]
+    file && select(file)
   }
 
   function initIframe(iframe) {

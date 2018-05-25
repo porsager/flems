@@ -7,6 +7,7 @@ import Model from './model'
 import { defaults } from './state'
 import Actions from './actions'
 import message from './message'
+import hotkeys from './hotkeys'
 
 let resizeRegistrered = false
 window.m = m // wright hmr
@@ -20,6 +21,8 @@ function Flems(dom, state = {}, runtimeUrl) {
   }
 
   message.listen(model, actions)
+
+  hotkeys(model, actions)
 
   m.mount(dom, {
     view: () => app(model, actions)
