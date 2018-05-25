@@ -1,7 +1,6 @@
 import inspect from 'object-inspect'
 import 'mithril/promise/promise'
-import { endsWith } from '../utils'
-import toposort from 'toposort'
+import { endsWith, toposort } from '../utils'
 
 let id = window.name
 let currentScript = {}
