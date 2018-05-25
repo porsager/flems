@@ -2,8 +2,6 @@ import m from 'mithril'
 import b from 'bss'
 
 import toolbarButton from '../components/toolbarbutton'
-import closeIcon from '../icons/close.svg'
-import refreshIcon from '../icons/refresh.svg'
 import playIcon from '../icons/play.svg'
 import pauseIcon from '../icons/pause.svg'
 import shareIcon from '../icons/share.svg'
@@ -34,14 +32,6 @@ export default (model, actions) =>
     toolbarButton(model.state.autoReload ? pauseIcon : playIcon, {
       title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',
       onclick: actions.toggleAutoReload
-    }),
-    model.state.reloadButton && toolbarButton(model.loading
-      ? closeIcon
-      : refreshIcon
-    , {
-      onclick: e => actions.refresh({ force: true }),
-      attention: model.hasChanges,
-      title: 'Refresh'
     }),
     model.state.shareButton && m('a' + b.color('inherit'), {
       href: 'https://flems.io',
