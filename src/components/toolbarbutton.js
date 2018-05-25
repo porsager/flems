@@ -9,6 +9,10 @@ export default (iconName, attrs = {}) =>
     + b
     .position('relative')
     .cursor('pointer')
+    .borderRadius(3)
+    .$hover(
+      b.background('#ddd').color('gray')
+    )
   , {
     style: attrs.attention ? b.$animate('1s linear infinite', {
       '0%': b.transform('scale(1)').o(1),
@@ -22,11 +26,8 @@ export default (iconName, attrs = {}) =>
       onclick: attrs.onclick,
       size: 26,
       class: b.p(5)
-        .borderRadius(3)
         .position('relative')
-        .$hover(
-          b.background('#ddd').color('gray')
-        ).class
+        .class + ' ' + (attrs.iconClass ? attrs.iconClass.class : '')
     }, iconName)
   ,
     Boolean(attrs.badge) && m('.badge'

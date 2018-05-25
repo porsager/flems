@@ -4,9 +4,12 @@ import b from 'bss'
 import input from './input'
 import { wait } from '../utils'
 
-import icon from '../components/icon'
-import tooltip from '../components/tooltip'
+import toolbarButton from '../components/toolbarbutton'
 import arrowIcon from '../icons/arrow.svg'
+import closeIcon from '../icons/close.svg'
+import refreshIcon from '../icons/refresh.svg'
+import playIcon from '../icons/play.svg'
+import pauseIcon from '../icons/pause.svg'
 
 export default (model, actions) =>
   m('.console' + b
@@ -23,9 +26,7 @@ export default (model, actions) =>
   },
     m('div'
       + b.d('flex').c('#777').flexShrink(0)
-    , {
-      onclick: () => actions.toggleConsole()
-    },
+    ,
       m('span'
         + b.fs(12).tt('uppercase').p('8px 10px')
       ,
@@ -33,20 +34,15 @@ export default (model, actions) =>
         bubble('#d82c2c', model.console.errors()),
         bubble('gray', model.console.infos())
       ),
-      m('div' + b.ml('auto').rel,
-        icon({
-          size: 32,
-          style:
-            b.transform(model.state.console === true && 'rotate(180deg)').style,
-          class: b
-            .p(8)
-            .background('inherit')
-            .cursor('pointer')
-            .transition('max-height 0.3s')
-            .class
-        }, arrowIcon),
-        tooltip({
-          title: model.state.console === true ? 'Hide console' : 'Show console'
+      m('div' + b.d('flex').ml('auto').p(2).rel,
+        toolbarButton(model.state.autoReload ? pauseIcon : playIcon, {
+          title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',
+          onclick: actions.toggleAutoReload
+        }),
+        toolbarButton(arrowIcon, {
+          iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
+          title: model.state.console === true ? 'Hide console' : 'Show console',
+          onclick: actions.toggleConsole
         })
       )
     ),
