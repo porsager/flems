@@ -2,8 +2,8 @@ import m from 'mithril'
 import { assign } from './utils'
 
 export default function(model, actions) {
-  const tabs = Array.from(Array(9)).reduce((acc, x, i) => (
-    acc[i + 1] = () => actions.selectFileByIndex(i),
+  const tabs = '123456789'.split('').reduce((acc, x, i) => (
+    acc[i] = () => actions.selectFileByIndex(i),
     acc
   ), {})
 
