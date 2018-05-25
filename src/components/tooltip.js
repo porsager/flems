@@ -1,8 +1,13 @@
 import m from 'mithril'
 import b from 'bss'
 
+function closest(el, s) {
+  const match = el.querySelector(s)
+  return match || (el.parentNode ? closest(el.parentNode, s) : null)
+}
+
 const getBounds = (dom) => {
-  const container = dom.closest('.flems')
+  const container = closest(dom, '.flems') || document.body
       , outer = container.parentNode.getBoundingClientRect()
       , inner = dom.parentNode.getBoundingClientRect()
 
