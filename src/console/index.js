@@ -89,7 +89,7 @@ export default (model, actions) =>
         }, [
           m('div' + b.flexGrow(1)
           ,
-            log.content[0].indexOf('%c') > -1 && log.content.length > 1
+            log.content.length > 1 && log.content[0].indexOf('%c') > -1
               ? log.content[0].split('%c').map((p, i) =>
                   m('span' + b(log.content[i] || ''), p)
                 )
