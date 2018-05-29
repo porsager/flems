@@ -39,6 +39,14 @@ export default (model, actions) =>
           title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',
           onclick: actions.toggleAutoReload
         }),
+        model.state.reloadButton && toolbarButton(model.loading
+          ? closeIcon
+          : refreshIcon
+        , {
+          onclick: e => actions.refresh({ force: true }),
+          attention: model.hasChanges,
+          title: 'Refresh'
+        }),
         toolbarButton(arrowIcon, {
           iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
           title: model.state.console === true ? 'Hide console' : 'Show console',

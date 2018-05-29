@@ -97,6 +97,7 @@ Flems is customizable to fit your need. If you don't want the toolbar or don't c
     fileTabs      : true,
     linkTabs      : true,
     shareButton   : true,
+    reloadButton  : true,
     console       : true,
     autoReload    : true,
     autoHeight    : false
