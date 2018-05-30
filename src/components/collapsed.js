@@ -8,7 +8,7 @@ export default (iconName, onclick) =>
     .position('absolute')
     .w('100%')
     .h('100%')
-    .zi(30)
+    .zi(50)
     .t(0)
     .cursor('pointer')
     .background('rgb(255,255,255)')

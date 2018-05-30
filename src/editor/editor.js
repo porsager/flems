@@ -201,7 +201,7 @@ export default (model, actions) =>
       })
 
       if (model.state.autoHeight)
-        model.cmHeight = dom.querySelector('.CodeMirror-sizer').offsetHeight
+        model.cmHeight = dom.querySelector('.CodeMirror-sizer').offsetHeight * (model.vertical() ? 2 : 1) + (model.toolbar() * (model.vertical() ? 4 : 3))
     }
   })
 

@@ -12,7 +12,7 @@ export default (model, actions) =>
       .bs('0 0 8px rgba(0,0,0,.2)')
       .position('relative')
       .maxHeight(30)
-      .zi(40)
+      .zi(30)
       .d('flex')
       .transition('max-height 0.3s')
       .fd('column')

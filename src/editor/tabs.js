@@ -16,6 +16,15 @@ export default (model, actions) =>
       .fontSize(14)
       .zi(20)
       .boxShadow('0 1px 1px rgba(0,0,0,0.35)')
+      .$after(
+        b
+        .content('')
+        .w(2)
+        .h('100%')
+        .position('absolute')
+        .right(-2)
+        .bc('inherit')
+      )
     ,
     m('.tabs'
       + b.d('flex')

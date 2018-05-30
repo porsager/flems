@@ -5,7 +5,7 @@ export default (model, actions) =>
   m('.handle'
    + b
     .position('absolute')
-    .zi(10)
+    .zi(40)
   ,
     {
       style: model.vertical()

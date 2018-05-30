@@ -6,7 +6,10 @@ import handle from './handle'
 
 export default (model, actions) =>
   [
-    model.state.middle < 3 && collapsed(editIcon, actions.resetSize),
+    (model.vertical() && model.editor
+      ? model.editor.offsetHeight <= model.toolbar()
+      : model.state.middle < 3
+    ) && collapsed(editIcon, actions.resetSize),
     model.state.toolbar && tabs(model, actions),
     editor(model, actions),
     model.state.resizeable && handle(model, actions)

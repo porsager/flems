@@ -15,6 +15,7 @@ export default (model, actions) =>
       .position('relative')
       .d('flex')
       .fd('column')
+      .h(model.cmHeight)
   , {
     style: b
       .h(!model.state.autoHeight && '100%')
@@ -35,7 +36,7 @@ export default (model, actions) =>
         .position('relative')
         .minWidth(50)
         .minHeight(model.toolbar())
-        .zIndex(1)
+        .zIndex(30)
         .flexGrow(1)
       , {
         style: b
@@ -61,6 +62,7 @@ export default (model, actions) =>
           .position(model.vertical() && 'absolute')
           .width(model.vertical() && '100%')
           .height(model.vertical() && ((100 - model.state.middle) + '%'))
+          .maxHeight(model.vertical() && 'calc(100% - ' + model.toolbar() + 'px')
           .maxWidth(!model.vertical() && ((100 - model.state.middle) + '%'))
           .style
       },
