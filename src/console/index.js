@@ -6,10 +6,6 @@ import { wait } from '../utils'
 
 import toolbarButton from '../components/toolbarbutton'
 import arrowIcon from '../icons/arrow.svg'
-import closeIcon from '../icons/close.svg'
-import refreshIcon from '../icons/refresh.svg'
-import playIcon from '../icons/play.svg'
-import pauseIcon from '../icons/pause.svg'
 
 export default (model, actions) =>
   m('.console' + b
@@ -35,19 +31,7 @@ export default (model, actions) =>
         bubble('#d82c2c', model.console.errors()),
         bubble('gray', model.console.infos())
       ),
-      m('div' + b.d('flex').ml('auto').p(2).rel,
-        toolbarButton(model.state.autoReload ? pauseIcon : playIcon, {
-          title: (model.state.autoReload ? 'Disable' : 'Enable') + ' auto reload',
-          onclick: actions.toggleAutoReload
-        }),
-        model.state.reloadButton && toolbarButton(model.loading
-          ? closeIcon
-          : refreshIcon
-        , {
-          onclick: e => actions.refresh({ force: true }),
-          attention: model.hasChanges,
-          title: 'Refresh'
-        }),
+      m('div' + b.d('flex').ml('auto').p(2, 6).rel,
         toolbarButton(arrowIcon, {
           iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
           title: model.state.console === true ? 'Hide console' : 'Show console',
