@@ -7,7 +7,8 @@ let currentScript = {}
 let consoleCount = 0
 
 const parent = window.parent
-const blobUrls = {}
+const blobMap = {}
+const blobUrls = []
 const moduleExports = {}
 
 const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
@@ -94,7 +95,7 @@ function init(data) {
   if (!document.title)
     document.title = title
 
-  const scripts = Array
+  const scriptsInHtml = Array
     .prototype
     .slice
     .call(document.getElementsByTagName('script'))
@@ -116,28 +117,25 @@ function init(data) {
     .concat(state.links.filter(l => l.type === 'style' && l.content))
     .forEach(loadStyle)
 
-  state.files.filter(f => f.type === 'script').forEach(moduleCheck)
-
-  const topology = getTopology(state.files)
+  const scripts = state.files.filter(f => f.type === 'script').map(moduleCheck)
 
   Promise
     .all(
       state.links
       .filter(l => l.type === 'script')
       .map(loadRemoteScript)
-      .concat(scripts.map(s => s.url
+      .concat(scriptsInHtml.map(s => s.url
         ? loadRemoteScript(s)
         : flemsLoadScript(s)
       ))
     )
     .then(() => Promise.all(
-      state.files.filter(f => f.type === 'script')
-        .sort((a, b) =>
-          a.module && b.module
-            ? topology.indexOf(a.name) < topology.indexOf(b.name)
-            : a.module < b.module
+      scripts.filter(f => !f.module)
+      .concat(
+        getTopology(scripts.filter(f => f.module)).map(name =>
+          scripts.filter(f => f.name === name)[0]
         )
-        .map(flemsLoadScript)
+      ).map(flemsLoadScript)
     ))
     .then((r) => {
       window.dispatchEvent(new Event('DOMContentLoaded'))
@@ -149,17 +147,17 @@ function init(data) {
     })
 }
 
-function getTopology(files) {
-  return toposort(files.filter(f => f.module).reduce((acc, file) => {
+function getTopology(modules) {
+  return toposort(modules.reduce((acc, file) => {
     file.content.split('\n').map(f => {
       const match = (f.match(topoSortRegex) || [])[1]
       if (match) {
-        const found = files.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
+        const found = modules.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
         found && acc.push([file.name, found.name])
       }
     })
     return acc
-  }, []))
+  }, [])).reverse()
 }
 
 function patch(original, monkey, returnFirst) {
@@ -191,7 +189,11 @@ function consoleOutput(content, type, err, slice = 0) {
   send('console', {
     number: consoleCount++,
     file: err.currentScript,
-    content: (Array.isArray(content) ? content : [content]).map(s => s === '' ? '\'\'' : String(s)),
+    content: (Array.isArray(content) ? content : [content]).map(s =>
+      s === '' ? '\'\'' : blobUrls.reduce((acc, url) =>
+        acc.replace(url, blobMap[url] ? blobMap[url].name : url)
+      , String(s))
+    ),
     stack: cutoff > -1 ? stack.slice(0, cutoff) : stack,
     type: type,
     date: new Date()
@@ -201,7 +203,7 @@ function consoleOutput(content, type, err, slice = 0) {
 const locationRegex = /(.*)[ @(](.*):([\d]*):([\d]*)/i
 function parseStackLine(string) {
   const [match, func, fileName, line, column] = (' ' + string.trim()).match(locationRegex) || []
-      , file = blobUrls[fileName]
+      , file = blobMap[fileName]
 
   return match && {
     function: func.trim().replace(/^(global code|at) ?/, ''),
@@ -271,7 +273,8 @@ function flemsLoadScript(script) {
 
     const url = URL.createObjectURL(new Blob([content], { type : 'application/javascript' }))
 
-    blobUrls[url] = script
+    blobUrls.push(String(url))
+    blobMap[url] = script
 
     if (script.module)
       moduleExports[script.name] = moduleExports[script.name.substring(0, script.name.lastIndexOf('.'))] = url
