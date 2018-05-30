@@ -22,6 +22,7 @@ export default (model, actions) =>
       .fd('column')
       .background('rgb(246,246,246)')
   , {
+    oncreate: ({ dom }) => model.console.dom = dom,
     style: b.maxHeight(model.state.console === true && '50%').style
   },
     m('div'

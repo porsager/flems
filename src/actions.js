@@ -315,7 +315,7 @@ export default function(model) {
 
     model.state.middle = Math.min(Math.max(Math.round(
       (model.vertical()
-        ? (e.clientY - top + 5) / (model.dom.offsetHeight)
+        ? (e.clientY - top + 5) / (model.dom.offsetHeight - model.console.dom.offsetHeight)
         : (e.clientX - left + 5) / (model.dom.offsetWidth)
       ) * 10000
     ) / 100, 0), 100)
