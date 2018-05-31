@@ -46,10 +46,13 @@ modes.js = modes.script
 modes.html = modes.document
 
 export default (model, actions) =>
-  m('.editor'
+  m('div'
   + b.position('absolute')
     .w('100%')
-    .top(model.toolbar()).left(0).bottom(0).right(0)
+    .top(model.toolbar())
+    .left(0)
+    .bottom(0)
+    .right(0)
     .overflow('hidden')
     .$after(
       b

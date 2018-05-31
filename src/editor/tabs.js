@@ -8,6 +8,7 @@ export default (model, actions) =>
   m('nav.toolbar'
     + b
       .position('relative')
+      .f('left')
       .d('flex')
       .c('gray')
       .w('100%')
