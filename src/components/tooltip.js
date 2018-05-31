@@ -3,13 +3,14 @@ import b from 'bss'
 
 function closest(el, s) {
   const match = el.querySelector(s)
-  return match || (el.parentNode ? closest(el.parentNode, s) : null)
+  return match || (el.parentElement ? closest(el.parentElement, s) : null)
 }
 
 const getBounds = (dom) => {
   const container = closest(dom, '.flems') || document.body
-      , outer = container.parentNode.getBoundingClientRect()
-      , inner = dom.parentNode.getBoundingClientRect()
+  window.mam = container
+  const outer = container.parentElement.getBoundingClientRect()
+      , inner = dom.parentElement.getBoundingClientRect()
 
   return {
     top: inner.top - outer.top,
@@ -34,7 +35,7 @@ const position = ({ dom }) => {
   const rect = getBounds(dom)
 
   const left = Math.min(
-    -dom.clientWidth / 2 + dom.parentNode.clientWidth / 2,
+    -dom.clientWidth / 2 + dom.parentElement.clientWidth / 2,
     -dom.clientWidth + rect.width + ( -rect.right - 4)
   )
 
@@ -50,7 +51,7 @@ const position = ({ dom }) => {
 }
 
 const oncreate = ({ dom }) => {
-  dom.parentNode.classList.add(
+  dom.parentElement.classList.add(
     b.$nest(':hover .tooltip',
       b.o(1).transform('scale(1)')
     ).class
