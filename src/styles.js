@@ -8,11 +8,12 @@ b.helper({
 })
 
 b.css({
-  '.flems input, .flems textarea': b.fontFamily('inherit'),
-  '.flems': b.boxSizing('border-box'),
-  '.flems *, .flems *:before, .flems *:after': b.boxSizing('inherit'),
+  '.flems input, .flems textarea': b.fontFamily('inherit').m(0).p(0),
+  '.flems': b.boxSizing('border-box').lh(18).fs(16),
+  '.flems *, .flems *:before, .flems *:after': b.boxSizing('inherit').fw('normal'),
   '.flems svg': b.fill('currentColor').va('middle'),
-  '.flems svg:not(:root)': b.overflow('hidden')
+  '.flems svg:not(:root)': b.overflow('hidden'),
+  '.flems a, .flems a:link, .flems a:visited': b.c('inherit').td('none').border('none')
 })
 
 const sheet = document.createElement('style')
