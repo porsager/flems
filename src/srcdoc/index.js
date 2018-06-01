@@ -133,7 +133,7 @@ function init(data) {
     )
     .then(() => Promise.all(scripts
       .filter(f => !f.module)
-      .concat(modules.map(m => moduleOrder.filter(name => name = m.name)[0] || m))
+      .concat(modules.sort((a, b) => moduleOrder.indexOf(a.name) > moduleOrder.indexOf(b.name)))
       .map(flemsLoadScript))
     )
     .then((r) => {
