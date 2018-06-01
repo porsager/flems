@@ -3,7 +3,7 @@ import { assign } from './utils'
 
 export default function(model, actions) {
   const tabs = '123456789'.split('').reduce((acc, x, i) => (
-    acc[i] = () => actions.selectFileByIndex(i),
+    acc[x] = () => actions.selectFileByIndex(i),
     acc
   ), {})
 
