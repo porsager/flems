@@ -118,6 +118,8 @@ function init(data) {
     .forEach(loadStyle)
 
   const scripts = state.files.filter(f => f.type === 'script').map(moduleCheck)
+      , modules = scripts.filter(f => f.module)
+      , moduleOrder = getTopology(modules)
 
   Promise
     .all(
@@ -129,14 +131,11 @@ function init(data) {
         : flemsLoadScript(s)
       ))
     )
-    .then(() => Promise.all(
-      scripts.filter(f => !f.module)
-      .concat(
-        getTopology(scripts.filter(f => f.module)).map(name =>
-          scripts.filter(f => f.name === name)[0]
-        )
-      ).map(flemsLoadScript)
-    ))
+    .then(() => Promise.all(scripts
+      .filter(f => !f.module)
+      .concat(modules.map(m => moduleOrder.filter(name => name = m.name)[0] || m))
+      .map(flemsLoadScript))
+    )
     .then((r) => {
       window.dispatchEvent(new Event('DOMContentLoaded'))
       window.dispatchEvent(new Event('load'))
@@ -151,10 +150,8 @@ function getTopology(modules) {
   return toposort(modules.reduce((acc, file) => {
     file.content.split('\n').map(f => {
       const match = (f.match(topoSortRegex) || [])[1]
-      if (match) {
-        const found = modules.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
-        found && acc.push([file.name, found.name])
-      }
+      const found = match && modules.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
+      found && acc.push([file.name, found.name])
     })
     return acc
   }, [])).reverse()
@@ -247,7 +244,6 @@ function loadRemoteScript(script) {
 
     el.onload = () => resolve()
     el.onerror = err => reject([script.url, err])
-
     script.el
       ? script.el.parentNode.replaceChild(el, script.el)
       : document.body.appendChild(el)
