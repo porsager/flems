@@ -138,6 +138,9 @@ export default (model, actions) =>
       })
 
       cm.on('gutterClick', selectLineNumber)
+      cm.on('scrollCursorIntoView', (cm, e) => {
+        e.codemirrorIgnore = true
+      })
 
       const initialDoc = cm.getDoc()
 
