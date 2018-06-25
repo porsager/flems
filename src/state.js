@@ -20,6 +20,7 @@ export const defaults = () => ({
   selected      : '.js',
   color         : 'rgb(38,50,56)',
   theme         : 'material',
+  layout        : 'auto',
   resizeable    : true,
   editable      : true,
   toolbar       : true,
@@ -73,7 +74,7 @@ export function sanitize(state) {
     if (!urlRegex.test(f.url))
       throw new Error('Link url\'s should start with http:// or https://')
 
-    f.type = extMap[f.type] || f.type || extMap[ext(f.url)]
+    f.type = extMap[f.type] || f.type || extMap[ext(f.url)] || 'script'
     f.name = f.name || f.url.slice(f.url.lastIndexOf('/') + 1)
   })
 
