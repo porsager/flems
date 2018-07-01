@@ -191,16 +191,16 @@ export default function(model) {
   }
 
   function getContent(file) {
-    if (!file.compiler)
+    const compile = file.compiler === 'function'
+      ? file.compiler
+      : compilers[file.compiler || ext(file.name)]
+
+    if (!compile)
       return {
         name: file.name,
         type: file.type,
         content: file.content
       }
-
-    const compile = file.compiler === 'function'
-      ? file.compiler
-      : compilers[file.compiler || ext(file.name)]
 
     return compile(file).then(result => {
       if (result.error)
