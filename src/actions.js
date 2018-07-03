@@ -104,6 +104,7 @@ export default function(model) {
   function onConsoleKeyDown(e) {
     if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey && !e.altKey) {
       e.preventDefault()
+      model.console.output.push({ type: 'input', content: ['> ' + model.console.input] })
       if (model.console.input.indexOf('console.clear()') === 0)
         clearConsole()
       evaluate()
