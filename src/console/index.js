@@ -2,10 +2,12 @@ import m from 'mithril'
 import b from 'bss'
 
 import input from './input'
+import icon from '../components/icon'
 import { wait } from '../utils'
 
 import toolbarButton from '../components/toolbarbutton'
 import arrowIcon from '../icons/arrow.svg'
+import closeIcon from '../icons/close.svg'
 
 export default (model, actions) =>
   m('.console' + b
@@ -22,16 +24,16 @@ export default (model, actions) =>
     style: b.maxHeight(model.state.console === true && '50%').style
   },
     m('div'
-      + b.d('flex').c('#777').flexShrink(0)
+      + b.d('flex').jc('space-between').c('#777').flexShrink(0)
     ,
-      m('span'
-        + b.fs(12).tt('uppercase').p('8px 10px')
+      m('div'
+        + b.d('flex').fs(12).tt('uppercase').p('8px 10px')
       ,
         m('span' + b.mr(4), 'Console'),
-        bubble('#d82c2c', model.console.errors()),
-        bubble('gray', model.console.infos())
+        bubble('#d82c2c', actions.clearErrors, model.console.errors()),
+        bubble('gray', actions.clearLogs, model.console.infos())
       ),
-      m('div' + b.d('flex').ml('auto').p(2, 6).rel,
+      m('div' + b.d('flex').p(2, 6),
         toolbarButton(arrowIcon, {
           iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
           title: model.state.console === true ? 'Hide console' : 'Show console',
@@ -110,7 +112,7 @@ export default (model, actions) =>
     model.state.console === true && input(model, actions)
   )
 
-function bubble(background, count) {
+function bubble(background, onclick, count) {
   return m('span'
     + b.bc(background)
       .position('relative')
@@ -118,13 +120,29 @@ function bubble(background, count) {
       .p(0, 10)
       .ta('center')
       .c('white')
-      .d('inline-block')
+      .d('flex')
+      .ai('center')
       .br(50)
       .o(0.2)
       .transition('opacity 0.5s')
   , {
     style: b.o(count > 0 && 1).style
   },
-    count
+    count,
+    count > 0 && icon({
+      size: 14,
+      onclick,
+      class: b
+        .p(3)
+        .ml(4)
+        .mr(-8)
+        .br(20)
+        .cursor('pointer')
+        .transition('opacity 0.3s')
+        .$hover(b
+          .transform('scale')
+          .bc('rgba(255,255,255,0.25)')
+        ).class
+    }, closeIcon)
   )
 }

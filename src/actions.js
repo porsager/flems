@@ -34,6 +34,8 @@ export default function(model) {
     stopDragging,
     changeMiddle,
     setShareUrl,
+    clearErrors,
+    clearLogs,
     fileChange,
     initIframe,
     setState,
@@ -51,6 +53,18 @@ export default function(model) {
     Promise.all(model.state.links.map(getLink)).then(() =>
       refresh({ force: true })
     )
+  }
+
+  function clearConsole() {
+    model.console.output = [{ content: [m('i', 'Console was cleared')] }]
+  }
+
+  function clearErrors() {
+    model.console.output = model.console.output.filter(x => x.type !== 'error')
+  }
+
+  function clearLogs() {
+    model.console.output = model.console.output.filter(x => x.type === 'error')
   }
 
   function setState(state) {
@@ -90,6 +104,8 @@ export default function(model) {
   function onConsoleKeyDown(e) {
     if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey && !e.altKey) {
       e.preventDefault()
+      if (model.console.input.indexOf('console.clear()') === 0)
+        clearConsole()
       evaluate()
       return false
     } else if ((e.key === 'ArrowUp' || e.keyCode === 38) && (model.console.historyNavigated || e.target.selectionStart === 0)) {
