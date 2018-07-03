@@ -158,6 +158,9 @@ export default function(model) {
   }
 
   function select(file, silent) {
+    if (typeof file === 'string')
+      file = findFile(model.state, file)
+
     model.selected(file)
     !silent && changed()
   }

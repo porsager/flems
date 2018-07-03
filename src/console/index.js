@@ -98,7 +98,7 @@ export default (model, actions) =>
                 m('a' + (s.file ? b.textDecoration('underline').cursor('pointer') : ''), {
                   onclick: e => {
                     e.stopPropagation()
-                    s.select && actions.select(s)
+                    s.select && actions.select(s.select)
                   }
                 }, (s.file || 0) + ':' + (s.line || 0) + ':' + (s.column || 0))
               )
