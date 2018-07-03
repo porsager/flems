@@ -16,6 +16,16 @@ export default (model, actions) =>
       .d('flex')
       .fd('column')
       .h(model.cmHeight)
+      .boxSizing('border-box')
+      .lh(18)
+      .fs(16)
+      .$nest({
+        'input, textarea': b.fontFamily('inherit').m(0).p(0),
+        '*, *:before, *:after': b.boxSizing('inherit').fw('normal'),
+        svg: b.fill('currentColor').va('middle'),
+        'svg:not(:root)': b.overflow('hidden'),
+        'a, a:link, a:visited': b.c('inherit').td('none').border('none')
+      })
   , {
     style: b
       .h(!model.state.autoHeight && '100%')
