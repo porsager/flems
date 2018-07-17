@@ -23,7 +23,13 @@ export default function(model) {
     setMiddle     : size => model.state.middle = size,
     toggleConsole : change(hide => model.state.console = model.state.console === true ? 'collapsed' : true),
     resetSize     : change(() => actions.setMiddle(50)),
-    loaded        : () => model.loading = false,
+    loaded        : () => {
+      model.loading = false
+      if (model.console.clearOnNext) {
+        model.console.output = []
+        model.console.clearOnNext = false
+      }
+    },
     fileSelectionChange,
     selectFileByIndex,
     toggleAutoReload,
@@ -255,6 +261,11 @@ export default function(model) {
   }
 
   function consoleOutput(data) {
+    if (model.console.clearOnNext) {
+      model.console.output = []
+      model.console.clearOnNext = false
+    }
+
     const file = findFile(model.state, data.file)
 
     if (file && file.type === 'script' && tryBabel(data)) {
@@ -361,7 +372,7 @@ export default function(model) {
 
     model.hasChanges = false
     model.loading = true
-    model.console.output = []
+    model.console.clearOnNext = true
 
     Promise.all(model.state.files.map(getContent)).then(reloadIframe)
 
