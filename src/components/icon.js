@@ -3,8 +3,8 @@ import b from 'bss'
 
 export default (attrs, svg) =>
   m('i' + b
-    .w(attrs.size || 18)
-    .h(attrs.size || 18)
+    .w(attrs.size || 18)
+    .h(attrs.size || 18)
     .display('flex')
     .jc('center')
     .ai('center')

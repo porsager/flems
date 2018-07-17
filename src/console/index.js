@@ -13,7 +13,7 @@ export default (model, actions) =>
   m('.console' + b
       .bs('0 0 8px rgba(0,0,0,.2)')
       .position('relative')
-      .maxHeight(30)
+      .maxHeight(34)
       .zi(30)
       .d('flex')
       .transition('max-height 0.3s')
@@ -25,7 +25,9 @@ export default (model, actions) =>
   },
     m('div'
       + b.d('flex').jc('space-between').c('#777').flexShrink(0)
-    ,
+    , {
+      onclick: actions.toggleConsole
+    },
       m('div'
         + b.d('flex').fs(12).tt('uppercase').p('8px 10px')
       ,
@@ -36,8 +38,7 @@ export default (model, actions) =>
       m('div' + b.d('flex').p(2, 6),
         toolbarButton(arrowIcon, {
           iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
-          title: model.state.console === true ? 'Hide console' : 'Show console',
-          onclick: actions.toggleConsole
+          title: model.state.console === true ? 'Hide console' : 'Show console'
         })
       )
     ),
@@ -131,7 +132,10 @@ function bubble(background, onclick, count) {
     count,
     count > 0 && icon({
       size: 14,
-      onclick,
+      onclick: e => {
+        e.stopPropagation()
+        onclick(e)
+      },
       class: b
         .p(3)
         .ml(4)
