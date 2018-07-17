@@ -1,4 +1,3 @@
-import inspect from 'object-inspect'
 import { memoize } from './utils'
 
 const load = memoize(url =>
@@ -9,9 +8,8 @@ const load = memoize(url =>
     el.src = url
     document.body.appendChild(el)
     el.onload = resolve
-    el.onerror = err => {
-      reject('Could not load compiler from ' + url + '\n\n' + inspect(err))
-    }
+    el.onerror = err =>
+      reject('Could not load compiler from ' + url)
   })
 )
 
