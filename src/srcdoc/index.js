@@ -167,7 +167,9 @@ function patch(original, monkey, returnFirst) {
 
 function cleanLog(args) {
   return [].slice.apply(args).map(a =>
-    (typeof a === 'string' ? a : inspect(a).replace(/\\n/g, '\n'))
+    (typeof a === 'string' || (typeof a === 'function' && a.toString)
+      ? (typeof a === 'function' ? 'ƒ ' : '') + String(a)
+      : inspect(a).replace(/\\n/g, '\n'))
   )
 }
 
