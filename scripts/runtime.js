@@ -9,10 +9,10 @@ const fs = require('fs')
 module.exports = rollup.rollup({
   input: 'src/srcdoc/index.js',
   plugins: [
-    commonjs(),
     nodeResolve(),
+    commonjs(),
     buble(),
-    uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true })
+    uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true })
   ]
 })
 .then(bundle => bundle.generate({ format: 'iife' }))
