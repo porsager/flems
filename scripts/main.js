@@ -21,11 +21,11 @@ rollup.rollup({
       'b.setDebug(true)': '',
       codemirrorStyles: JSON.stringify(codemirrorCss)
     }),
-    commonjs(),
     svgo(),
     nodeResolve(),
+    commonjs(),
     buble(),
-    uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true }),
+    uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true }),
     filesize()
   ]
 })
