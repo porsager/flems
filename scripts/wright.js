@@ -3,9 +3,9 @@ const wright = require('wright')
     , commonjs = require('rollup-plugin-commonjs')
     , nodeResolve = require('rollup-plugin-node-resolve')
     , replace = require('rollup-plugin-replace')
+    , svgo = require('rollup-plugin-svgo')
     , codemirrorCss = require('./codemirrorcss')
     , pkg = require('../package.json')
-    , svg = require('./svg')
 
 wright({
   main: 'scripts/wright.html',
@@ -34,9 +34,9 @@ function roll(dev) {
         'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
         codemirrorStyles: JSON.stringify(codemirrorCss)
       }),
-      svg(),
-      commonjs(),
-      nodeResolve()
+      svgo(),
+      nodeResolve(),
+      commonjs()
     ]
   })
   .then(bundle => {
@@ -46,5 +46,4 @@ function roll(dev) {
       format: 'umd'
     })
   })
-  .then(result => result.code)
 }
