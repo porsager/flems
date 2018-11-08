@@ -12,8 +12,8 @@ const blobUrls = []
 const moduleExports = {}
 
 const isModuleRegex = /(^\s*|[}\);\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'\(\)\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , topoSortRegex = new RegExp('import\\s*[{}a-zA-Z*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
-    , staticImportRegex = new RegExp('(import\\s*[{}a-zA-Z*,\\s]*\\s*(?: from |)[\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"])', 'g')
+    , topoSortRegex = new RegExp('import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
+    , staticImportRegex = new RegExp('(import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)[\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"])', 'g')
     , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
 
 try {
@@ -261,7 +261,7 @@ function flemsLoadScript(script) {
   return new Promise((resolve, reject) => {
     const content = script.module
       ? Object.keys(moduleExports).reduce((acc, m) =>
-        acc.replace(new RegExp(`(import\\s*[{}a-zA-Z*,\\s]*\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+        acc.replace(new RegExp(`(import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
            .replace(new RegExp(`(import\\(['"])\\.?\\/${m}\\.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
       , script.content)
         .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
