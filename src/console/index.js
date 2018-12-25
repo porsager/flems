@@ -83,13 +83,22 @@ export default (model, actions) =>
           onclick: () => log.expand = !log.expand,
           title: log.date
         }, [
-          m('div' + b.flexGrow(1)
-          ,
-            log.content.length > 1 && log.content[0].indexOf('%c') > -1
-              ? log.content[0].split('%c').map((p, i) =>
-                  m('span' + b(log.content[i] || ''), p)
+          m('div' + b.flexGrow(1).$nest('>span', b.mr(10)),
+            log.content.length > 1
+              && log.content[0].indexOf('%c') > -1
+              && m('span',
+                log.content[0].split('%c').filter(x => x).map((p, i) =>
+                  m('span' + b(log.content[i + 1] || ''), p)
                 )
-              : log.content.map(p => m('span' + b.d('inline-block').mr(10), p))
+              ),
+
+            log.content.slice(
+              log.content.length > 1 && log.content[0].indexOf('%c') > -1
+                ? log.content[0].match(/%c/g).length + 1
+                : 0
+            ).map((p, i) =>
+              m('span', p)
+            )
           ),
           log.stack && m('.stack' + b
               .ta('right')
