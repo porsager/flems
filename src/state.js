@@ -8,6 +8,7 @@ const extMap = {
   ts        : 'script',
   ls        : 'script',
   coffee    : 'script',
+  sibilant  : 'script',
   css       : 'style',
   styl      : 'style',
   less      : 'style',

@@ -94,6 +94,11 @@ const compilers = {
     })
 
     return data
+  }),
+  sibilant: file => load('https://static.flems.io/compilers/sibilant.js').then(() => {
+    return {
+      code: window.sibilant.sibilize(file.content)
+    }
   })
 }
 
