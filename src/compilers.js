@@ -14,10 +14,10 @@ const load = memoize(url =>
 )
 
 const compilers = {
-  styl: file => load('https://cdn.rawgit.com/stylus/stylus-lang.com/615e6e5d33e0954f9a89cf9d6d18fdc7062a87fd/try/stylus.min.js').then(() => ({
+  styl: file => load('https://static.flems.io/compilers/stylus.min.js').then(() => ({
     code: window.stylus.render(file.content)
   })),
-  scss: file => load('https://unpkg.com/sass.js@0.10.9/dist/sass.sync.js').then(() =>
+  scss: file => load('https://static.flems.io/compilers/sass.sync.js').then(() =>
     new Promise((resolve, reject) =>
       window.Sass.compile(file.content, result => {
         result.message
@@ -26,7 +26,7 @@ const compilers = {
       })
     )
   ),
-  sass: file => load('https://unpkg.com/sass.js@0.10.9/dist/sass.sync.js').then(() =>
+  sass: file => load('https://static.flems.io/compilers/sass.sync.js').then(() =>
     new Promise((resolve, reject) =>
       window.Sass.compile(file.content, {
         indentedSyntax: true
@@ -37,10 +37,10 @@ const compilers = {
       })
     )
   ),
-  less: file => load('https://unpkg.com/less@3.0.1/dist/less.js').then(() =>
+  less: file => load('https://static.flems.io/compilers/less.min.js').then(() =>
     window.less.render(file.content).then(result => ({ code: result.css }))
   ),
-  ts: file => load('https://unpkg.com/typescript@2.4.2/lib/typescriptServices.js').then(() => {
+  ts: file => load('https://static.flems.io/compilers/typescriptServices.js').then(() => {
     const result = window.ts.transpileModule(file.content, {
       fileName: file.name,
       compilerOptions: {
@@ -55,7 +55,7 @@ const compilers = {
       map: result.sourceMapText
     }
   }),
-  babel: file => load('https://unpkg.com/@babel/standalone@7.0.0-beta.42/babel.min.js').then(() =>
+  babel: file => load('https://static.flems.io/compilers/babel.min.js').then(() =>
     window.Babel.transform(file.content, {
       presets: [['es2015', { modules: false }], 'stage-2', 'react'],
       sourceMaps: true,
@@ -63,7 +63,7 @@ const compilers = {
       sourceFileName: file.name
     })
   ),
-  ls: file => load('https://cdn.rawgit.com/gkz/LiveScript/12f0cc856a02c8065a0ab18696a6df6e272b10bd/browser/livescript-min.js').then(() => {
+  ls: file => load('https://static.flems.io/compilers/livescript-min.js').then(() => {
     if (!window.livescript)
       window.livescript = window.require('livescript')
 
@@ -78,8 +78,8 @@ const compilers = {
     }
   }),
   coffee: file => Promise.all([
-    load('https://unpkg.com/@babel/standalone@7.0.0-beta.42/babel.min.js'),
-    load('https://cdn.rawgit.com/jashkenas/coffeescript/001f97ac399dbcbf2bdcc32e4f2fc9fca4d6869f/docs/v2/browser-compiler/coffeescript.js')
+    load('https://static.flems.io/compilers/babel.min.js'),
+    load('https://static.flems.io/compilers/coffeescript.js')
   ]).then(() => {
     const coffee = window.CoffeeScript.compile(file.content, {
       sourceMap: true,
