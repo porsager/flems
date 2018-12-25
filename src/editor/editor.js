@@ -84,8 +84,8 @@ export default (model, actions) =>
     )
   , {
     oncreate: ({ dom }) => {
-      const blockStart = /[\{\(\[]$/
-          , onlyBlocks = /[^\{\}\[\]\(\)]/g
+      const blockStart = /[{([]$/
+          , onlyBlocks = /[^{}[\]()]/g
 
       const cm = CodeMirror(dom, {
         theme: model.state.theme || 'material',
