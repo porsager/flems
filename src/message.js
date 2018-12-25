@@ -2,17 +2,18 @@ import m from 'mithril'
 
 export default {
   listen: (model, actions) => {
+    const handlers = {
+      loaded: actions.loaded,
+      console: actions.consoleOutput,
+      resize: actions.resizing,
+      scroll: actions.scroll
+    }
+
     window.addEventListener('message', ({ data }) => {
       if (data.flems !== model.id || !(data.name in handlers))
         return
 
-      if (data.name === 'loaded')
-        actions.loaded()
-      else if (data.name === 'console')
-        actions.consoleOutput(data.content)
-      else if (data.name === 'resize')
-        actions.resizing()
-
+      handlers[data.name](data.content)
       m.redraw()
     })
   }

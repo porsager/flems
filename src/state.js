@@ -33,6 +33,7 @@ export const defaults = () => ({
   autoReload    : true,
   autoFocus     : false,
   autoHeight    : false,
+  scroll        : null,
   files : [{
     name: '.html',
     content: ''

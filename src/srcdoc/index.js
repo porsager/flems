@@ -57,7 +57,12 @@ window.addEventListener('unhandledrejection', (e) =>
   window.p('Unhandled rejection:', e.reason)
 )
 
-window.addEventListener('resize', () => send('resize'))
+let scrollTimer
+window.addEventListener('resize', () => send('resize'), { passive: true })
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollTimer)
+  scrollTimer = setTimeout(() => send('scroll', [window.scrollX, window.scrollY]), 400)
+}, { passive: true })
 window.addEventListener('message', ({ data }) => {
   if (data.name === 'init') {
     init(data.content)
@@ -140,6 +145,8 @@ function init(data) {
       window.dispatchEvent(new Event('DOMContentLoaded'))
       window.dispatchEvent(new Event('load'))
       send('loaded')
+      if (state.scroll)
+        window.scrollTo.apply(window, state.scroll)
     })
     .catch(err => {
       consoleOutput('Error loading:\n\t' + (Array.isArray(err) ? err.join('\n') : err), 'error', { stack: '' })

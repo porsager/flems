@@ -48,7 +48,8 @@ export default function(model) {
     resizing,
     refresh,
     getLink,
-    select
+    select,
+    scroll
   }
 
   getLinks()
@@ -101,6 +102,11 @@ export default function(model) {
     changed()
     if (model.state.autoReload)
       refresh()
+  }
+
+  function scroll(pos) {
+    model.state.scroll = pos
+    changed()
   }
 
   function onConsoleInput(e) {
@@ -204,6 +210,7 @@ export default function(model) {
       content: {
         id: model.id,
         state: {
+          scroll: model.state.scroll,
           files: iframeState,
           links: model.state.links.map(link => ({
             type: link.type,
