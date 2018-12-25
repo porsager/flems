@@ -24,7 +24,11 @@ rollup.rollup({
     svgo(),
     nodeResolve(),
     commonjs(),
-    buble(),
+    buble({
+      transforms: {
+        dangerousTaggedTemplateString: true
+      }
+    }),
     uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true }),
     filesize()
   ]
