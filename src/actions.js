@@ -29,6 +29,7 @@ export default function(model) {
         model.console.output = []
         model.console.clearOnNext = false
       }
+      typeof actions.onloaded === 'function' && actions.onloaded(model.state)
     },
     fileSelectionChange,
     selectFileByIndex,
@@ -310,9 +311,9 @@ export default function(model) {
     if (selections)
       file.selections = selections === '0:0' ? undefined : selections
 
-    changed()
-
+    typeof actions.onload === 'function' && actions.onload()
     refreshFile(file)
+    changed()
   }
 
   function refreshFile(file) {
@@ -333,6 +334,7 @@ export default function(model) {
             content: file.patched || file.content
           }
         }, '*')
+        typeof actions.onloaded === 'function' && actions.onloaded()
       } else {
         refresh()
       }

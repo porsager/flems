@@ -33,6 +33,9 @@ function Flems(dom, state = {}, runtimeUrl) {
     focus: model.focus,
     reload: () => actions.refresh({ force: true }),
     onchange: fn => actions.onchange = fn,
+    onload: fn => actions.onload = fn,
+    onloaded: fn => actions.onloaded = fn,
+    getLink: actions.getLink,
     set: actions.setState,
     redraw: m.redraw
   }
