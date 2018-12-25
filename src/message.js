@@ -3,7 +3,7 @@ import m from 'mithril'
 export default {
   listen: (model, actions) => {
     window.addEventListener('message', ({ data }) => {
-      if (data.name && data.flems !== model.id)
+      if (data.flems !== model.id || !(data.name in handlers))
         return
 
       if (data.name === 'loaded')
