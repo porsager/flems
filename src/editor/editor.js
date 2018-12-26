@@ -98,6 +98,7 @@ export default (model, actions) =>
         foldGutter: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         tabSize: 2,
+        viewportMargin: model.state.autoHeight ? Infinity : 10,
         keyMap: 'sublime',
         extraKeys: {
           'Alt-F': 'findPersistent',
@@ -204,10 +205,14 @@ export default (model, actions) =>
 
         if (focusAfter)
           cm.focus()
+
+        if (!model.cmHeight && model.state.autoHeight) {
+          requestAnimationFrame(() =>
+            model.cmHeight = dom.querySelector('.CodeMirror-sizer').offsetHeight * (model.vertical() ? 2 : 1) + (model.toolbar() * (model.vertical() ? 4 : 3))
+          )
+        }
       })
 
-      if (model.state.autoHeight)
-        model.cmHeight = dom.querySelector('.CodeMirror-sizer').offsetHeight * (model.vertical() ? 2 : 1) + (model.toolbar() * (model.vertical() ? 4 : 3))
     }
   })
 
