@@ -142,8 +142,8 @@ function init(data) {
       .map(flemsLoadScript))
     )
     .then((r) => {
-      window.dispatchEvent(new Event('DOMContentLoaded'))
-      window.dispatchEvent(new Event('load'))
+      window.dispatchEvent(createEvent('DOMContentLoaded'))
+      window.dispatchEvent(createEvent('load'))
       send('loaded')
       if (state.scroll)
         window.scrollTo.apply(window, state.scroll)
@@ -151,6 +151,17 @@ function init(data) {
     .catch(err => {
       consoleOutput('Error loading:\n\t' + (Array.isArray(err) ? err.join('\n') : err), 'error', { stack: '' })
     })
+}
+
+function createEvent(eventName) {
+  let event
+  if (typeof Event === 'function') {
+    event = new Event(eventName)
+  } else {
+    event = document.createEvent('Event')
+    event.initEvent(eventName, true, true)
+  }
+  return event
 }
 
 function getTopology(modules) {
