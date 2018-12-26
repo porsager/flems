@@ -15,7 +15,6 @@ export default (model, actions) =>
       .position('relative')
       .d('flex')
       .fd('column')
-      .h(model.cmHeight)
       .boxSizing('border-box')
       .lh(18)
       .fs(16)
@@ -28,7 +27,7 @@ export default (model, actions) =>
       })
   , {
     style: b
-      .h(!model.state.autoHeight && '100%')
+      .h(model.state.autoHeight ? model.cmHeight : '100%')
       .userSelect(model.dragging && 'none')
       .style
   },
