@@ -2,7 +2,7 @@ const wright = require('wright')
     , rollup = require('rollup')
     , commonjs = require('rollup-plugin-commonjs')
     , nodeResolve = require('rollup-plugin-node-resolve')
-    , replace = require('rollup-plugin-replace')
+    , modify = require('rollup-plugin-modify')
     , svgo = require('rollup-plugin-svgo')
     , codemirrorCss = require('./codemirrorcss')
     , pkg = require('../package.json')
@@ -30,10 +30,13 @@ function roll(dev) {
     cache: cache,
     treeshake: false,
     plugins: [
-      replace({
+      ...Object.entries({
         'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
         codemirrorStyles: JSON.stringify(codemirrorCss)
-      }),
+      }).map(([key, value]) => modify({
+        find: key,
+        replace: value
+      })),
       svgo(),
       nodeResolve(),
       commonjs()

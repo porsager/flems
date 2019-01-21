@@ -25,7 +25,9 @@ rollup.rollup({
       replace: value
     })),
     svgo(),
-    nodeResolve(),
+    nodeResolve({
+      browser: true
+    }),
     commonjs(),
     buble({
       transforms: {

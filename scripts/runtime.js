@@ -9,7 +9,9 @@ const fs = require('fs')
 module.exports = rollup.rollup({
   input: 'src/srcdoc/index.js',
   plugins: [
-    nodeResolve(),
+    nodeResolve({
+      browser: true
+    }),
     commonjs(),
     buble(),
     uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true })
