@@ -53,6 +53,40 @@ window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   consoleOutput(err.message || String(err), 'error', err)
 }
 
+function goto(e) {
+  if (e.ctrlKey || e.metaKey) {
+    let stack
+    let el = e.target
+    while (el.parentNode && !stack) {
+      stack = el.stackTrace
+      el = el.parentNode
+    }
+    if (stack) {
+      const parsed = stack.split('\n').filter(l => l.indexOf('blob:') > -1).map(parseStackLine)[0]
+      if (parsed && parsed.file) {
+        send('goto', parsed)
+        e.stopPropagation()
+        e.preventDefault()
+      }
+    }
+  }
+}
+
+window.addEventListener('keydown', e => (e.key === 'Meta' || e.key === 'Control') && send('metadown'), true)
+window.addEventListener('keyup', e => (e.key === 'Meta' || e.key === 'Control') && send('metaup'), true)
+document.addEventListener('mouseover', e => {
+  const rect = e.target.getBoundingClientRect()
+  send('over', {
+    tag: e.target.tagName.toLowerCase(),
+    top: rect.top,
+    left: rect.left,
+    width: rect.width,
+    height: rect.height,
+    bottom: rect.bottom
+  })
+  goto(e)
+}, true)
+
 window.addEventListener('unhandledrejection', (e) =>
   window.p('Unhandled rejection:', e.reason)
 )
@@ -79,6 +113,27 @@ window.addEventListener('message', ({ data }) => {
     }
   }
 })
+
+function patchMithril() {
+  if (!window.m)
+    return
+  const _m = window.m
+  window.m = function() {
+    const stack = new Error().stack
+    const vnode = _m.apply(null, arguments)
+    if (!vnode.attrs)
+      vnode.attrs = {}
+    const oncreate = vnode.attrs.oncreate
+    vnode.attrs.oncreate = (vnode) => {
+      vnode.dom && (vnode.dom.stackTrace = stack)
+      oncreate && oncreate(vnode)
+    }
+    return vnode
+  }
+
+  for (const key in _m)
+    window.m[key] = _m[key]
+}
 
 function send(name, content) {
   parent.postMessage({
@@ -307,12 +362,13 @@ function flemsLoadScript(script) {
       Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
 
     el.onerror = reject
-    el.onload = resolve
+    el.onload = () => (patchMithril(), resolve())
     currentScript = script
 
     script.el
       ? script.el.parentNode.replaceChild(el, script.el)
       : document.body.appendChild(el)
+
   })
 }
 

@@ -16,6 +16,12 @@ function Flems(dom, state = {}, runtimeUrl) {
   const model = Model(dom, state, runtimeUrl)
       , actions = Actions(model)
 
+  window.addEventListener('keydown', e => model.metaDown = (e.key === 'Meta' || e.key === 'Control'), true)
+  window.addEventListener('keyup', e => {
+    model.metaDown = !(e.key === 'Meta' || e.key === 'Control')
+    actions.hideRect()
+  }, true)
+
   if (!resizeRegistrered) {
     window.addEventListener('resize', () => m.redraw())
     resizeRegistrered = true

@@ -50,12 +50,45 @@ export default function(model) {
     refresh,
     getLink,
     select,
-    scroll
+    scroll,
+    goto,
+    showRect,
+    hideRect,
+    setRect
   }
 
   getLinks()
 
   return actions
+
+  function showRect() {
+    model.showInspectRect = true
+    m.redraw()
+  }
+
+  function hideRect() {
+    model.showInspectRect = model.metaDown = false
+    m.redraw()
+  }
+
+  function setRect(rect) {
+    model.showInspectRect = model.metaDown
+    model.inspectRect = rect
+  }
+
+  function goto(l) {
+    const file = findFile(model.state, l.file)
+    if (!file)
+      return
+
+    mapToOriginalLine(l)
+    select(file)
+    model.focus({
+      line: l.line,
+      column: l.column,
+      scrollTo: true
+    })
+  }
 
   function getLinks() {
     Promise.all(model.state.links.map(getLink)).then(() =>
@@ -201,6 +234,8 @@ export default function(model) {
   }
 
   function initIframe(iframe) {
+    iframe.addEventListener('mouseenter', () => model.mouseOverIframe = true)
+    iframe.addEventListener('mouseleave', () => model.mouseOverIframe = false)
     model.iframe = iframe
     model.iframe.addEventListener('load', iframeReady)
   }
@@ -282,24 +317,26 @@ export default function(model) {
       return
     }
 
-    data.stack.forEach(s => {
-      const file = findFile(model.state, s.file)
-      if (!file || !file.map)
-        return
-
-      const smc = new SourceMap.SourceMapConsumer(file.map)
-      const result = smc.originalPositionFor({
-        line: s.line,
-        column: s.column
-      })
-      s.line = result.line
-      s.column = result.column
-    })
+    data.stack.forEach(mapToOriginalLine)
 
     if (data.content && !Array.isArray(data.content))
       data.content = [data.content]
 
     model.console.output.push(data)
+  }
+
+  function mapToOriginalLine(s) {
+    const file = findFile(model.state, s.file)
+    if (!file || !file.map)
+      return
+
+    const smc = new SourceMap.SourceMapConsumer(file.map)
+    const result = smc.originalPositionFor({
+      line: s.line,
+      column: s.column
+    })
+    s.line = result.line
+    s.column = result.column
   }
 
   function fileChange(file, content, selections) {
