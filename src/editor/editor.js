@@ -146,9 +146,15 @@ export default (model, actions) =>
       const initialDoc = cm.getDoc()
 
       model.refreshCm.map(() => cm.refresh())
-      model.focus.map(({ line = 0, column = 0 } = {}) => {
+      model.focus.map(({ line = 0, column = 0, scrollTo = false } = {}) => {
         cm.setCursor(line - 1, column - 1)
         cm.focus()
+        scrollTo && requestAnimationFrame(() =>
+          cm.scrollIntoView({
+            line: line,
+            ch: column
+          }, 100)
+        )
       })
 
       model.selected.map(file => {
