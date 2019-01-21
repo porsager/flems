@@ -11,7 +11,7 @@ const firefox = navigator.userAgent.indexOf('Firefox') !== -1
 export default function(model) {
   let resizeTimer = null
     , debounceTimer = null
-    , iframeState
+    , iframeState = []
 
   const changed = () => actions.onchange(model.state)
       , change = fn => value => (fn(value), changed())
