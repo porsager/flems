@@ -6,7 +6,7 @@ const rollup = require('rollup')
     , buble = require('rollup-plugin-buble')
     , uglify = require('rollup-plugin-uglify')
     , filesize = require('rollup-plugin-filesize')
-    , replace = require('rollup-plugin-replace')
+    , modify = require('rollup-plugin-modify')
     , svgo = require('rollup-plugin-svgo')
     , codemirrorCss = require('./codemirrorcss')
     , pkg = require('../package.json')
@@ -15,12 +15,15 @@ const rollup = require('rollup')
 rollup.rollup({
   input: 'src/index.js',
   plugins: [
-    replace({
+    ...Object.entries({
       'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
       'window.m = m // wright hmr': '',
       'b.setDebug(true)': '',
       codemirrorStyles: JSON.stringify(codemirrorCss)
-    }),
+    }).map(([key, value]) => modify({
+      find: key,
+      replace: value
+    })),
     svgo(),
     nodeResolve(),
     commonjs(),
