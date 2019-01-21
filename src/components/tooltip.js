@@ -8,7 +8,6 @@ function closest(el, s) {
 
 const getBounds = (dom) => {
   const container = closest(dom, '.flems') || document.body
-  window.mam = container
   const outer = container.parentElement.getBoundingClientRect()
       , inner = dom.parentElement.getBoundingClientRect()
 
