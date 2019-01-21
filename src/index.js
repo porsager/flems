@@ -8,6 +8,7 @@ import { defaults } from './state'
 import Actions from './actions'
 import message from './message'
 import hotkeys from './hotkeys'
+import { createFlemsIoLink } from './state'
 
 let resizeRegistrered = false
 window.m = m // wright hmr
@@ -42,6 +43,7 @@ function Flems(dom, state = {}, runtimeUrl) {
 }
 
 Flems.defaults = defaults
+Flems.createFlemsIoLink = createFlemsIoLink
 Flems.version = process.env.FLEMS_VERSION // eslint-disable-line
 
 export default Flems
