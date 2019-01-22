@@ -38,6 +38,6 @@
     "rollup-plugin-svgo": "1.0.2",
     "rollup-plugin-uglify": "6.0.1",
     "source-map": "0.6.1",
-    "wright": "2.0.0-beta17"
+    "wright": "2.0.0-beta20"
   }
 }
