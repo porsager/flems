@@ -18,7 +18,7 @@ module.exports = rollup.rollup({
   ]
 })
 .then(bundle => bundle.generate({ format: 'iife' }))
-.then(runtime => {
+.then(({ output: [runtime] }) => {
   fs.writeFileSync('dist/runtime.js', runtime.code)
   fs.writeFileSync('dist/runtime.html', [
     '<!DOCTYPE html>',

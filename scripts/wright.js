@@ -38,7 +38,9 @@ function roll(dev) {
         replace: value
       })),
       svgo(),
-      nodeResolve(),
+      nodeResolve({
+        browser: true
+      }),
       commonjs()
     ]
   })
@@ -49,4 +51,5 @@ function roll(dev) {
       format: 'umd'
     })
   })
+  .then(({ output }) => output[0])
 }
