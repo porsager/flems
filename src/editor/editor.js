@@ -104,6 +104,7 @@ export default (model, actions) =>
           'Alt-F': 'findPersistent',
           'Shift-Tab': 'indentLess',
           'Cmd-L': false,
+          'Cmd-M': false,
           'Ctrl-L': false,
           Enter: cm => {
             const cursor = cm.getCursor()
