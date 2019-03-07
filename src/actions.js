@@ -334,7 +334,8 @@ export default function(model) {
             content: file.patched || file.content
           }
         }, '*')
-        typeof actions.onloaded === 'function' && actions.onloaded()
+        typeof actions.onloaded === 'function' && actions.onloaded(model.state)
+        changed()
       } else {
         refresh()
       }
