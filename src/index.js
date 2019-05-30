@@ -4,11 +4,10 @@ import m from 'mithril'
 import app from './app'
 
 import Model from './model'
-import { defaults } from './state'
+import { defaults, createFlemsIoLink } from './state'
 import Actions from './actions'
 import message from './message'
 import hotkeys from './hotkeys'
-import { createFlemsIoLink } from './state'
 
 let resizeRegistrered = false
 window.m = m // wright hmr
