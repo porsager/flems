@@ -390,6 +390,9 @@ export default function(model) {
   }
 
   function reloadIframe(files) {
+    if (!model.iframe) // HACK - find proper fix - safari calls reloadIframe before initIframe
+      return setTimeout(reloadIframe, 10, files)
+
     if (firefox)
       model.iframe.src += '?'
 
