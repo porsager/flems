@@ -171,7 +171,7 @@ export default function(model) {
       deserialize: v => v
     }).then(content => {
       content = content.replace(/\r\n/g, '\n')
-      if (content.length > 200000) // Too large files are slow
+      if (content.length > 300000) // Too large files are slow
         return
 
       link.content = content
