@@ -26,7 +26,7 @@
     "codemirror": "5.47.0",
     "csso": "3.5.1",
     "lz-string": "1.4.4",
-    "mithril": "2.0.0-rc.5",
+    "mithril": "2.0.3",
     "object-inspect": "1.6.0",
     "rollup": "1.14.6",
     "rollup-plugin-buble": "0.19.6",

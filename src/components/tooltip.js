@@ -61,8 +61,7 @@ const oncreate = ({ dom }) => {
 export default ({
   zIndex = 11,
   title = ''
-}) => [
-  m('.tooltip'
+}) => m('.tooltip'
    + b
     .position('absolute')
     .o(0)
@@ -83,28 +82,27 @@ export default ({
     .whiteSpace('nowrap')
   ,
     {
+      key: 'tooltip',
       oncreate
     }
   ,
-    title
+    title,
+    m('.tooltip_triangle'
+     + b
+      .pointerEvents('none')
+      .o(0)
+      .zi(zIndex + 1)
+      .transform('scale(0)')
+      .position('absolute')
+      .transformOrigin('bottom center')
+      .transition('opacity 0.3s, transform 0.3s')
+      .l('calc(50% - 5px)')
+      .w(0)
+      .h(0)
+      .borderLeft('5px solid transparent')
+      .borderRight('5px solid transparent')
+      .textAlign('right')
+    , {
+      oncreate: setTriangle
+    })
   )
-,
-  m('.tooltip'
-   + b
-    .pointerEvents('none')
-    .o(0)
-    .zi(zIndex + 1)
-    .transform('scale(0)')
-    .position('absolute')
-    .transformOrigin('bottom center')
-    .transition('opacity 0.3s, transform 0.3s')
-    .l('calc(50% - 5px)')
-    .w(0)
-    .h(0)
-    .borderLeft('5px solid transparent')
-    .borderRight('5px solid transparent')
-    .textAlign('right')
-  , {
-    oncreate: setTriangle
-  })
-]
