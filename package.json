@@ -22,7 +22,7 @@
   "repository": "porsager/flems",
   "license": "WTFPL",
   "devDependencies": {
-    "bss": "1.6.2",
+    "bss": "1.6.3",
     "codemirror": "5.48.2",
     "csso": "3.5.1",
     "lz-string": "1.4.4",
