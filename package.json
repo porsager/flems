@@ -23,7 +23,7 @@
   "license": "WTFPL",
   "devDependencies": {
     "bss": "1.6.2",
-    "codemirror": "5.47.0",
+    "codemirror": "5.48.2",
     "csso": "3.5.1",
     "lz-string": "1.4.4",
     "mithril": "2.0.3",
