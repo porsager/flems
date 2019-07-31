@@ -30,13 +30,10 @@ function roll(dev) {
     cache: cache,
     treeshake: false,
     plugins: [
-      ...Object.entries({
+      modify({
         'process.env.FLEMS_VERSION': JSON.stringify(pkg.version),
         codemirrorStyles: JSON.stringify(codemirrorCss)
-      }).map(([key, value]) => modify({
-        find: key,
-        replace: value
-      })),
+      }),
       svgo(),
       nodeResolve({
         browser: true
