@@ -21,6 +21,7 @@ export default function(dom, state, runtimeUrl) {
     runtimeUrl    : runtimeUrl || runtimeUrlGuess || 'flems.html',
     console       : {
       input         : '',
+      inputNumber   : 0,
       output        : [],
       history       : [],
       position      : 0,
