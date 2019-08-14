@@ -40,7 +40,15 @@ monkeys.forEach(monkey => {
   window.console[monkey] = patch(original, monkey)
 })
 
-window.p = patch(null, 'print', true)
+const p = function(x) {
+  if (Array.isArray(x) && Array.isArray(x.raw))
+    return (...rest) => (window.p(x[0], ...rest), rest[0])
+
+  window.console.log.apply(console, arguments)
+  return x
+}
+
+window.p = p
 
 window.onerror = function(msg, file, line, col, err) { // eslint-disable-line
   err = (!err || typeof err === 'string') ? { message: msg || err } : err
