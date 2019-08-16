@@ -40,9 +40,14 @@ monkeys.forEach(monkey => {
   window.console[monkey] = patch(original, monkey)
 })
 
-const p = function(x) {
-  if (Array.isArray(x) && Array.isArray(x.raw))
-    return p.bind(null, x[0])
+function p(x) {
+  if (Array.isArray(x) && Array.isArray(x.raw)) {
+    return function() {
+      const args = [x[0]].concat(Array.from(arguments))
+      log.apply(console, args)
+      consoleOutput(cleanLog(args), 'log', new Error(), 1)
+    }
+  }
 
   log.apply(console, arguments)
   consoleOutput(cleanLog(arguments), 'log', new Error(), 1)
