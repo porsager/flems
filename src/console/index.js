@@ -111,6 +111,7 @@ export default (model, actions) =>
                   onclick: e => {
                     e.stopPropagation()
                     s.select && actions.select(s.select)
+                    model.focus({ line: s.line, column: s.column, scrollTo: true })
                   }
                 }, (s.file || 0) + ':' + (s.line || 0) + ':' + (s.column || 0))
               )
