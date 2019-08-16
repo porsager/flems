@@ -42,9 +42,10 @@ monkeys.forEach(monkey => {
 
 const p = function(x) {
   if (Array.isArray(x) && Array.isArray(x.raw))
-    return (...rest) => (window.p(x[0], ...rest), rest[0])
+    return p.bind(null, x[0])
 
-  window.console.log.apply(console, arguments)
+  log.apply(console, arguments)
+  consoleOutput(cleanLog(arguments), 'log', new Error(), 1)
   return x
 }
 
