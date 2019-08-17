@@ -12,8 +12,8 @@ const blobUrls = []
 const moduleExports = {}
 
 const isModuleRegex = /(^\s*|[});\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , topoSortRegex = new RegExp('import\\s*[{}\\w*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
-    , staticImportRegex = new RegExp('(import\\s*[{}\\w*,\\s]*\\s*(?: from |)[\'"])([\\w@][\\w@/.-]*)([\'"])', 'g')
+    , topoSortRegex = new RegExp('import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
+    , staticImportRegex = new RegExp('(import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"])([\\w@][\\w@/.-]*)([\'"])', 'g')
     , dynamicImportRegex = new RegExp('(import\\([\'"])([\\w@][\\w@/.-]*)([\'"]\\))', 'g')
 
 try {
