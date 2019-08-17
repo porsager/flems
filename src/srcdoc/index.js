@@ -294,7 +294,7 @@ function flemsLoadScript(script) {
   return new Promise((resolve, reject) => {
     const content = script.module
       ? Object.keys(moduleExports).reduce((acc, m) =>
-        acc.replace(new RegExp(`(import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+        acc.replace(new RegExp(`(import\\s*[{}$\\w*,\\s]*\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
            .replace(new RegExp(`(import\\(['"])\\.?\\/${m}\\.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
       , script.content)
         .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
