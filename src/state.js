@@ -5,6 +5,7 @@ import compilers from './compilers'
 const extMap = {
   html      : 'document',
   js        : 'script',
+  mjs       : 'script',
   ts        : 'script',
   ls        : 'script',
   coffee    : 'script',
