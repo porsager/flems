@@ -12,9 +12,9 @@ const blobUrls = []
 const moduleExports = {}
 
 const isModuleRegex = /(^\s*|[});\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , topoSortRegex = new RegExp('import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
-    , staticImportRegex = new RegExp('(import\\s*[{}0-9a-zA-Z*,\\s]*\\s*(?: from |)[\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"])', 'g')
-    , dynamicImportRegex = new RegExp('(import\\([\'"])([a-zA-Z1-9@][a-zA-Z0-9@/._-]*)([\'"]\\))', 'g')
+    , topoSortRegex = new RegExp('import\\s*[{}\\w*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
+    , staticImportRegex = new RegExp('(import\\s*[{}\\w*,\\s]*\\s*(?: from |)[\'"])([\\w@][\\w@/.-]*)([\'"])', 'g')
+    , dynamicImportRegex = new RegExp('(import\\([\'"])([\\w@][\\w@/.-]*)([\'"]\\))', 'g')
 
 try {
   window.parent = null
@@ -42,10 +42,11 @@ monkeys.forEach(monkey => {
 
 function p(x) {
   if (Array.isArray(x) && Array.isArray(x.raw)) {
-    return function() {
+    return function(first) {
       const args = [x[0]].concat(Array.from(arguments))
       log.apply(console, args)
       consoleOutput(cleanLog(args), 'log', new Error(), 1)
+      return first
     }
   }
 
