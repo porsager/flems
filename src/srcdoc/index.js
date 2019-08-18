@@ -12,7 +12,7 @@ const blobUrls = []
 const moduleExports = {}
 
 const isModuleRegex = /(^\s*|[});\n]\s*)(import\s*\(?(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{)|export\s\s*(['"]|(\*[\s\S]+as[\s\S]+)?(?!type)([^"'()\n;]+)[\s\S]*from[\s\S]*['"]|\{|default|function|class|var|const|let|async[\s\S]+function|async[\s\S]+\())/
-    , topoSortRegex = new RegExp('import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]')
+    , topoSortRegex = new RegExp('import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"]\\.?\\/(.*\\.?[a-z]*)[\'"]', 'g')
     , staticImportRegex = new RegExp('(import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"])([\\w@][\\w@/.-]*)([\'"])', 'g')
     , dynamicImportRegex = new RegExp('(import\\([\'"])([\\w@][\\w@/.-]*)([\'"]\\))', 'g')
 
@@ -181,13 +181,17 @@ function createEvent(eventName) {
 
 function getTopology(modules) {
   return toposort(modules.reduce((acc, file) => {
-    file.content.split('\n').map(f => {
-      const match = (f.match(topoSortRegex) || [])[1]
-      const found = match && modules.filter(f => f.name === match || f.name.substring(0, f.name.lastIndexOf('.')) === match)[0]
+    let result
+    while ((result = topoSortRegex.exec(file.content)) !== null) {
+      const found = findModule(modules, result[1])
       found && acc.push([file.name, found.name])
-    })
+    }
     return acc
   }, [])).reverse()
+}
+
+function findModule(modules, name) {
+  return modules.filter(f => f.name === name || f.name.substring(0, f.name.lastIndexOf('.')) === name)[0]
 }
 
 function patch(original, monkey, returnFirst) {
@@ -294,7 +298,7 @@ function flemsLoadScript(script) {
   return new Promise((resolve, reject) => {
     const content = script.module
       ? Object.keys(moduleExports).reduce((acc, m) =>
-        acc.replace(new RegExp(`(import\\s*[{}$\\w*,\\s]*\\s*(?: from |)['"])\\.?\\/${m}\\.?[a-z]*(['"])`, 'i'), '$1' + moduleExports[m] + '$2')
+        acc.replace(new RegExp('(import\\s*[{}$\\w*,\\s]*\\s*(?: from |)[\'"])\\.?\\/' + m + '\\.?[a-z]*([\'"])', 'i'), '$1' + moduleExports[m] + '$2')
            .replace(new RegExp(`(import\\(['"])\\.?\\/${m}\\.?[a-z]*(['"]\\))`, 'ig'), '$1' + moduleExports[m] + '$2')
       , script.content)
         .replace(staticImportRegex, '$1https://unpkg.com/$2?module$3')
