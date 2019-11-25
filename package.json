@@ -1,6 +1,6 @@
 {
   "name": "flems",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "A standalone web playground / sandbox",
   "browser": "dist/flems.html",
   "main": "src/index.js",
