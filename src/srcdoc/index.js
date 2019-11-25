@@ -290,7 +290,7 @@ function loadRemoteScript(script) {
 }
 
 function moduleCheck(script) {
-  script.module = script.name.endsWith('.mjs') || isModuleRegex.test(script.content)
+  script.module = endsWith('.mjs', script.name) || isModuleRegex.test(script.content)
   return script
 }
 
