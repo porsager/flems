@@ -4,6 +4,7 @@ import { endsWith, ext } from '../utils'
 
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/coffeescript/coffeescript'
 import 'codemirror/mode/css/css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
 import 'codemirror/keymap/sublime'
@@ -36,6 +37,10 @@ const modes = {
   },
   ts: {
     name: 'text/typescript',
+    statementIndent: 2
+  },
+  coffee: {
+    name: 'text/coffeescript',
     statementIndent: 2
   },
   style: 'css'
