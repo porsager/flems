@@ -123,6 +123,7 @@ function init(data) {
       url: s.src,
       name: '.html',
       type: 'script',
+      module: s.type === 'module',
       content: s.textContent,
       el: s
     }))
@@ -323,7 +324,7 @@ function flemsLoadScript(script) {
     })
 
     if (script.el)
-      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
+      Array.prototype.slice.call(script.el.attributes).forEach(a => a.name !== 'type' && el.setAttribute(a.name, a.value))
 
     el.onerror = reject
     el.onload = resolve
@@ -339,7 +340,7 @@ function create(tag, options) {
   const el = document.createElement(tag)
 
   for (const key in options)
-    el[key] = options[key]
+    options[key] && (el[key] = options[key])
 
   return el
 }
