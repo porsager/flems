@@ -339,7 +339,7 @@ export default function(model) {
       } else {
         refresh()
       }
-    }, 400)
+    }, model.state.autoReloadDelay || 400)
   }
 
 

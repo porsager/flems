@@ -87,20 +87,21 @@ Flems is customizable to fit your need. If you don't want the toolbar or don't c
 
 ```js
 {
-    middle        : 50,
-    selected      : '.js',
-    color         : 'rgb(38,50,56)',
-    theme         : 'material', // and 'none' or 'default'
-    resizeable    : true,
-    editable      : true,
-    toolbar       : true,
-    fileTabs      : true,
-    linkTabs      : true,
-    shareButton   : true,
-    reloadButton  : true,
-    console       : true,
-    autoReload    : true,
-    autoHeight    : false
+    middle          : 50,
+    selected        : '.js',
+    color           : 'rgb(38,50,56)',
+    theme           : 'material', // and 'none' or 'default'
+    resizeable      : true,
+    editable        : true,
+    toolbar         : true,
+    fileTabs        : true,
+    linkTabs        : true,
+    shareButton     : true,
+    reloadButton    : true,
+    console         : true,
+    autoReload      : true,
+    autoReloadDelay : 400,
+    autoHeight      : false
 }
 ```
 

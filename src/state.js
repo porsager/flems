@@ -32,6 +32,7 @@ export const defaults = () => ({
   reloadButton  : true,
   console       : true,
   autoReload    : true,
+  autoReloadDelay: 400,
   autoFocus     : false,
   autoHeight    : false,
   scroll        : null,
