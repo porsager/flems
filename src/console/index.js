@@ -15,7 +15,7 @@ export default (model, actions) =>
       .position('relative')
       .maxHeight(34)
       .zi(30)
-      .d('flex')
+      .display('flex')
       .transition('max-height 0.3s')
       .fd('column')
       .background('rgb(246,246,246)')
@@ -24,18 +24,18 @@ export default (model, actions) =>
     style: b.maxHeight(model.state.console === true && '50%').style
   },
     m('div'
-      + b.d('flex').jc('space-between').c('#777').flexShrink(0)
+      + b.display('flex').jc('space-between').c('#777').flexShrink(0)
     , {
       onclick: actions.toggleConsole
     },
       m('div'
-        + b.d('flex').fs(12).tt('uppercase').p('8px 10px')
+        + b.display('flex').fs(12).tt('uppercase').p('8px 10px')
       ,
         m('span' + b.mr(4), 'Console'),
         bubble('#d82c2c', actions.clearErrors, model.console.errors()),
         bubble('gray', actions.clearLogs, model.console.infos())
       ),
-      m('div' + b.d('flex').p(2, 6),
+      m('div' + b.display('flex').p(2, 6),
         toolbarButton(arrowIcon, {
           iconClass: b.transition('transform 0.3s').transform(model.state.console === true && 'rotate(180deg)'),
           title: model.state.console === true ? 'Hide console' : 'Show console'
@@ -68,7 +68,7 @@ export default (model, actions) =>
       }
     },
       model.console.output.slice(-200).map(log =>
-        m('.logLine' + b.d('flex')
+        m('.logLine' + b.display('flex')
           .ff('Source Code Pro, monospace')
           .alignItems('center')
           .p(2, 10)
@@ -131,7 +131,7 @@ function bubble(background, onclick, count) {
       .p(0, 10)
       .ta('center')
       .c('white')
-      .d('flex')
+      .display('flex')
       .ai('center')
       .br(50)
       .o(0.2)

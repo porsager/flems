@@ -5,7 +5,7 @@ import { wait } from '../utils'
 export default (model, actions) =>
   m('.input'
     + b
-      .d('flex')
+      .display('flex')
       .p(2, 0)
       .flexShrink(0)
       .w('100%')
@@ -15,7 +15,7 @@ export default (model, actions) =>
   },
     m('label'
       + b
-        .d('flex')
+        .display('flex')
         .ai('center')
         .m('0 6px 0 10px')
         .flexShrink(0)

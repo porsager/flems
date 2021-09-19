@@ -18,7 +18,7 @@ export default (iconName, onclick) =>
       to: b.o(1)
     })
     .boxShadow('0 0 10px rgba(0,0,0,.35)')
-    .d('flex')
+    .display('flex')
     .jc('center')
     .ai('center')
     ,

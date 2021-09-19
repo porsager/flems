@@ -26,7 +26,7 @@ const iframeInScroller = (model, actions) =>
     .overflowScrolling('touch')
     .flexGrow(1)
     .overflowY('scroll')
-    .d('flex')
+    .display('flex')
     .fd('column')
     .w('100%')
   ,

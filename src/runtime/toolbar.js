@@ -16,7 +16,7 @@ export default (model, actions) =>
     .flexShrink(0)
     .justifyContent('flex-end')
     .alignItems('center')
-    .d('flex')
+    .display('flex')
     .c('gray')
     .zi(20)
     .background('rgb(246,246,246)')

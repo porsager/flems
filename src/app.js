@@ -13,7 +13,7 @@ export default (model, actions) =>
       .fontFamily('-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"')
       .overflow('hidden')
       .position('relative')
-      .d('flex')
+      .display('flex')
       .fd('column')
       .boxSizing('border-box')
       .lh(18)
@@ -34,7 +34,7 @@ export default (model, actions) =>
     m('main'
      + b
       .flexGrow(1)
-      .d('flex')
+      .display('flex')
       .flexDirection(model.vertical() && 'column')
       .position(model.vertical() && 'relative')
     , {
@@ -63,7 +63,7 @@ export default (model, actions) =>
           .minHeight(model.toolbar())
           .b(0)
           .r(0)
-          .d('flex')
+          .display('flex')
           .fd('column')
           .flexGrow(1)
       , {

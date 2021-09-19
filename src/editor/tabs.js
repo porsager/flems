@@ -9,7 +9,7 @@ export default (model, actions) =>
     + b
       .position('relative')
       .f('left')
-      .d('flex')
+      .display('flex')
       .c('gray')
       .w('100%')
       .minHeight(model.toolbar())
@@ -28,7 +28,7 @@ export default (model, actions) =>
       )
     ,
     m('.tabs'
-      + b.d('flex')
+      + b.display('flex')
         .overflowX('auto')
         .overflowY('hidden')
         .flexGrow(1)
@@ -42,7 +42,7 @@ export default (model, actions) =>
 function linkTabs(model, actions) {
   return model.state.links.map(link =>
     tab(
-      m('div' + b.d('flex'),
+      m('div' + b.display('flex'),
         m('a' + b.c('inherit'), {
           href: link.url,
           target: '_blank',
@@ -72,7 +72,7 @@ function linkTabs(model, actions) {
 function fileTabs(model, actions) {
   return model.state.files.map(file =>
     tab(
-      m('div' + b.d('flex'),
+      m('div' + b.display('flex'),
         file.name,
         file.editable === false && icon({ size: 16, class: b.ml(6).class }, lockIcon)
       ),
@@ -85,7 +85,7 @@ function fileTabs(model, actions) {
 
 function tab(title, onclick, selected, model) {
   return m('.tab' + b
-    .d('flex')
+    .display('flex')
     .ai('center')
     .transition('background .3s, color .3s')
     .minWidth(40)

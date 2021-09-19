@@ -8,7 +8,7 @@ export default model =>
     .background('white')
     .pointerEvents('none')
     .top(model.toolbar() + 1).left(0).bottom(0).right(0)
-    .d('flex')
+    .display('flex')
     .jc('center')
     .ai('center')
     .transition('opacity 0.3s')
