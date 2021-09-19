@@ -3,7 +3,7 @@ const csso = require('csso')
 
 const sheets = [
   'node_modules/codemirror/lib/codemirror.css',
-  'node_modules/codemirror/theme/material.css',
+  'src/editor/material.css',
   'node_modules/codemirror/addon/fold/foldgutter.css',
   'node_modules/codemirror/addon/dialog/dialog.css'
 ]
