@@ -1,10 +1,9 @@
 console.time('build') // eslint-disable-line
 
 const rollup = require('rollup')
-    , commonjs = require('rollup-plugin-commonjs')
-    , nodeResolve = require('rollup-plugin-node-resolve')
-    , buble = require('rollup-plugin-buble')
-    , uglify = require('rollup-plugin-uglify')
+    , commonjs = require('@rollup/plugin-commonjs')
+    , { nodeResolve } = require('@rollup/plugin-node-resolve')
+    , esbuild = require('rollup-plugin-esbuild')
     , filesize = require('rollup-plugin-filesize')
     , modify = require('rollup-plugin-modify')
     , svgo = require('rollup-plugin-svgo')
@@ -29,12 +28,7 @@ rollup.rollup({
       browser: true
     }),
     commonjs(),
-    buble({
-      transforms: {
-        dangerousTaggedTemplateString: true
-      }
-    }),
-    uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true }),
+    esbuild({ minify: true }),
     filesize()
   ]
 })

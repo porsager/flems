@@ -1,9 +1,8 @@
 const fs = require('fs')
     , rollup = require('rollup')
-    , commonjs = require('rollup-plugin-commonjs')
-    , nodeResolve = require('rollup-plugin-node-resolve')
-    , buble = require('rollup-plugin-buble')
-    , uglify = require('rollup-plugin-uglify')
+    , commonjs = require('@rollup/plugin-commonjs')
+    , { nodeResolve } = require('@rollup/plugin-node-resolve')
+    , esbuild = require('rollup-plugin-esbuild')
 
 
 module.exports = rollup.rollup({
@@ -13,8 +12,7 @@ module.exports = rollup.rollup({
       browser: true
     }),
     commonjs(),
-    buble(),
-    uglify.uglify({ mangle: { reserved: ['flemsLoadScript'] }, compress: true })
+    esbuild({ minify: true, keepNames: true })
   ]
 })
 .then(bundle => bundle.generate({ format: 'iife' }))

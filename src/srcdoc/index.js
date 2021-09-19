@@ -295,7 +295,7 @@ function moduleCheck(script) {
   return script
 }
 
-function flemsLoadScript(script) {
+window.flemsLoadScript = function flemsLoadScript(script) {
   return new Promise((resolve, reject) => {
     const content = script.module
       ? Object.keys(moduleExports).reduce((acc, m) =>
