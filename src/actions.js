@@ -262,24 +262,10 @@ export default function(model) {
     })
   }
 
-  function tryBabel(log) {
-    return log.type === 'error'
-        && !window.Babel
-        && log.content.some(c => c.match(/Unexpected token '...|<'/))
-  }
-
   function consoleOutput(data) {
     if (model.console.clearOnNext) {
       model.console.output = []
       model.console.clearOnNext = false
-    }
-
-    const file = findFile(model.state, data.file)
-
-    if (file && file.type === 'script' && tryBabel(data)) {
-      file.compiler = 'babel'
-      refresh()
-      return
     }
 
     data.stack.forEach(s => {
