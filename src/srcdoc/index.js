@@ -274,13 +274,13 @@ function loadRemoteScript(script) {
     }
     const el = create('script', {
       charset: 'utf-8',
-      async: false,
-      defer: false,
       src: script.url
     })
 
+    el.async = el.defer = false
+
     if (script.el)
-      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el[a.name] = a.value)
 
     el.onload = () => resolve()
     el.onerror = err => reject([script.url, err])
@@ -318,13 +318,13 @@ window.flemsLoadScript = function flemsLoadScript(script) {
     const el = create('script', {
       src: url,
       charset: 'utf-8',
-      async: false,
-      defer: false,
       type: script.module ? 'module' : ''
     })
 
+    el.async = el.defer = false
+
     if (script.el)
-      Array.prototype.slice.call(script.el.attributes).forEach(a => a.name !== 'type' && el.setAttribute(a.name, a.value))
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el[a.name] = a.value)
 
     el.onerror = reject
     el.onload = resolve
