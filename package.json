@@ -5,6 +5,7 @@
   "browser": "dist/flems.html",
   "main": "src/index.js",
   "scripts": {
+    "test": "echo some day",
     "build": "npm run build:main && npm run build:runtime && npm run build:standalone",
     "build:main": "node scripts/main",
     "build:runtime": "node scripts/runtime",
