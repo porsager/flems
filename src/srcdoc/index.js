@@ -280,7 +280,7 @@ function loadRemoteScript(script) {
     el.async = el.defer = false
 
     if (script.el)
-      Array.prototype.slice.call(script.el.attributes).forEach(a => el[a.name] = a.value)
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
 
     el.onload = () => resolve()
     el.onerror = err => reject([script.url, err])
@@ -324,7 +324,7 @@ window.flemsLoadScript = function flemsLoadScript(script) {
     el.async = el.defer = false
 
     if (script.el)
-      Array.prototype.slice.call(script.el.attributes).forEach(a => el[a.name] = a.value)
+      Array.prototype.slice.call(script.el.attributes).forEach(a => el.setAttribute(a.name, a.value))
 
     el.onerror = reject
     el.onload = resolve
