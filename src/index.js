@@ -16,7 +16,7 @@ function Flems(dom, state = {}, runtimeUrl) {
       , actions = Actions(model)
 
   if (!resizeRegistrered) {
-    window.addEventListener('resize', () => m.redraw())
+    window.addEventListener('resize', redraw)
     resizeRegistrered = true
   }
 
@@ -37,7 +37,12 @@ function Flems(dom, state = {}, runtimeUrl) {
     onloaded: fn => actions.onloaded = fn,
     getLink: actions.getLink,
     set: actions.setState,
-    redraw: m.redraw
+    redraw: redraw
+  }
+
+  function redraw() {
+    m.redraw()
+    model.refreshCm(true)
   }
 }
 

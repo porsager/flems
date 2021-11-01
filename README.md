@@ -17,7 +17,7 @@ Just load a single file [`flems.html`](https://flems.io/flems.html) in a script 
 ``` html
 <script src="https://flems.io/flems.html" type="text/javascript" charset="utf-8"></script>
 <script>
-Flems(document.body, {
+const flems = Flems(document.body, {
     files: [{
         name: 'app.js',
         content: 'm.render(document.body, m("h1", "Hello world"))'
@@ -114,6 +114,9 @@ Reloads the runtime page
 
 ### `.focus()`
 Set focus in the editor for the currently selected file
+
+### `.redraw()`
+Call this if you have changed the size of the container or changed eg. `display: none` to `display: block`
 
 ## Bundling Flems
 
