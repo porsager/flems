@@ -13,7 +13,7 @@ const iframe = (model, actions) =>
     name: model.id,
     title: 'Runtime iframe',
     style: b.pointerEvents(model.dragging && 'none').style,
-    sandbox: 'allow-modals allow-forms allow-same-origin allow-scripts allow-popups',
+    sandbox: 'allow-modals allow-forms allow-same-origin allow-scripts allow-popups allow-presentation',
     allow: 'geolocation; microphone; camera; midi; encrypted-media',
     allowfullscreen: true,
     frameborder: '0',
