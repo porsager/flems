@@ -25,6 +25,7 @@ function Flems(dom, state = {}, runtimeUrl) {
   // Disable hotkeys until proper combos can be decided upon
   // hotkeys(model, actions)
 
+  m.mount(dom, null)
   m.mount(dom, {
     view: () => app(model, actions)
   })
