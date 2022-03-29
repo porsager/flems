@@ -44,7 +44,8 @@ const compilers = {
     const result = window.ts.transpileModule(file.content, {
       fileName: file.name,
       compilerOptions: {
-        module: 'ESNext',
+        module: 'esnext',
+        target: 'esnext',
         sourceMap: true,
         jsx: 'react'
       }
