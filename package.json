@@ -39,6 +39,6 @@
     "rollup-plugin-svgo": "2.0.0-beta.1",
     "source-map": "0.6.1",
     "tarts": "2.0.0",
-    "wright": "2.0.8"
+    "wright": "2.1.1"
   }
 }
