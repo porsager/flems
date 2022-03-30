@@ -39,5 +39,8 @@
     "rollup-plugin-svgo": "2.0.0-beta.1",
     "source-map": "0.6.1",
     "wright": "2.0.8"
+  },
+  "dependencies": {
+    "tarts": "2.0.0"
   }
 }
