@@ -61,11 +61,9 @@ The following compilers are currently only avaible for js files:
 It is also possible to supply a function that receives the file and returns a promise which resolves to an object with `code` and `map` eg.
 ```js
 function compile(file) {
-    return new Promise(resolve => {
-        return {
-            code: file.content.replace(/var /g, 'const '), // Don't do this
-            map: null // The JSON for a sourcemap
-        }
+    return Promise.resolve({
+        code: file.content.replace(/var /g, 'const '), // Don't do this
+        map: null // The JSON for a sourcemap
     })
 }
 ```

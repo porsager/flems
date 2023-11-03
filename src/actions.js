@@ -225,7 +225,7 @@ export default function(model) {
   }
 
   function getContent(file) {
-    const compile = file.compiler === 'function'
+    const compile = typeof file.compiler === 'function'
       ? file.compiler
       : compilers[file.compiler || ext(file.name)]
 
